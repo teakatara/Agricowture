@@ -15,11 +15,12 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback , OnMapLoadedCallback {
 
     private GoogleMap mMap;
-    public Button reloadbutton;
+    private Button reloadbutton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,13 +46,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-//
-//        LatLng tokyo = new LatLng(35.689487, 139.691706);
-//        mMap.addMarker(new MarkerOptions().position(tokyo).title("Marker in Tokyo"));
-//
-//        LatLng tokyodisneyland = new LatLng(35.632896,139.880394);
-//        mMap.addMarker(new MarkerOptions().position(tokyodisneyland).title("Marker in TokyoDisneyLand"));
-//
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
@@ -63,6 +58,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapLoaded(){
         CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(35.9438234,139.3178846)).zoom(8).build();
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        Toast.makeText(this,"地図の描画完了", Toast.LENGTH_LONG).show();
+        Constant.loadmapfinishedFlag = true;
+        Toast.makeText(this,"loadmapfinishedFlag = "+Constant.loadmapfinishedFlag, Toast.LENGTH_LONG).show();
+        
+        LatLng tokyo = new LatLng(35.689487, 139.691706);
+        mMap.addMarker(new MarkerOptions().position(tokyo).title("Marker in Tokyo"));
+
+        LatLng tokyodisneyland = new LatLng(35.632896,139.880394);
+        mMap.addMarker(new MarkerOptions().position(tokyodisneyland).title("Marker in TokyoDisneyLand"));
+
     }
 }
