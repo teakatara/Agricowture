@@ -5,7 +5,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -17,12 +16,13 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback , OnMapLoadedCallback {
 
     private GoogleMap mMap;
+    private boolean reloadflag = true;
     public Button reloadbutton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,12 +36,22 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         reloadbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                while (true){
-                    Log.d("LoadMapFinishedFlag",""+Constant.loadmapfinishedFlag);
-                    if(Constant.loadmapfinishedFlag){
-                        LatLng toretorevillage = new LatLng(33.6806225,135.3751043);
-                        mMap.addMarker(new MarkerOptions().position(toretorevillage).title("Marker is とれとれビレッジ") );
-                        break;
+                if (Constant.loadmapfinishedFlag){
+                    if(reloadflag) {
+                        reloadflag = false;
+                        Constant.jsonflag = false;
+                        MyThread myThread = new MyThread();
+                        Thread thread = new Thread(myThread);
+                        thread.start();
+//                        while (true){
+//                            if(Constant.jsonflag){
+//                                for (int i = 0;i < Constant.MVoA;i++){
+//
+//                                }
+//                                break;
+//                            }
+//                        }
+                        reloadflag = true;
                     }
                 }
             }
@@ -75,12 +85,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         Toast.makeText(this,"地図の描画完了", Toast.LENGTH_LONG).show();
         Constant.loadmapfinishedFlag = true;
-
-        LatLng tokyo = new LatLng(35.689487, 139.691706);
-        mMap.addMarker(new MarkerOptions().position(tokyo).title("Marker in Tokyo"));
-
-        LatLng tokyodisneyland = new LatLng(35.632896,139.880394);
-        mMap.addMarker(new MarkerOptions().position(tokyodisneyland).title("Marker in TokyoDisneyLand"));
-
+//        LatLng tokyo = new LatLng(35.689487, 139.691706);
+//        mMap.addMarker(new MarkerOptions().position(tokyo).title("Marker in Tokyo"));
+//        LatLng tokyodisneyland = new LatLng(35.632896,139.880394);
+//        mMap.addMarker(new MarkerOptions().position(tokyodisneyland).title("Marker in TokyoDisneyLand"));
     }
 }
