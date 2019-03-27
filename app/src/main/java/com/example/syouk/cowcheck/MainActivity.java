@@ -3,8 +3,10 @@ package com.example.syouk.cowcheck;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -16,42 +18,97 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback , OnMapLoadedCallback {
 
-    private GoogleMap mMap;
-    private boolean reloadflag = true;
+    public static GoogleMap mMap;
     public Button reloadbutton;
+    private boolean reloadflag = true;
+    private boolean firstbootflag;
 
+    //デバッグ用
+    private long Count;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Constant.CONTEXT = this;
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         reloadbutton = findViewById(R.id.ReloadButton);
+        firstbootflag = false;
+
+        final Handler handler = new Handler();
 
         reloadbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (Constant.loadmapfinishedFlag){
                     if(reloadflag) {
+                        if(firstbootflag) {
+                            for(int i = 0;i < Constant.MVoA;i++){
+                                Constant.marker[i].remove();
+                            }
+                        } else {
+                            firstbootflag = true;
+                        }
+                        Count = 0;
                         reloadflag = false;
                         Constant.jsonflag = false;
                         MyThread myThread = new MyThread();
                         Thread thread = new Thread(myThread);
                         thread.start();
-//                        while (true){
-//                            if(Constant.jsonflag){
-//                                for (int i = 0;i < Constant.MVoA;i++){
-//
-//                                }
-//                                break;
-//                            }
-//                        }
-                        reloadflag = true;
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                while(true){
+                                    Log.d("jsonFailureflag",""+Constant.jsonFailureflag);
+                                    Log.d("jsonflag",""+Constant.jsonflag);
+                                    try{
+                                        if(Constant.jsonflag){
+                                            Log.d("MarkerAdd","Start");
+                                            Constant.marker = new Marker[Constant.MVoA];
+                                            handler.post(new Thread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    for(int i = 0;i < Constant.MVoA;i++) {
+                                                        Log.d("MarkerAdd", "for = " + i);
+                                                        LatLng place = new LatLng(Constant.lat[i], Constant.lng[i]);
+                                                        Log.d("LatLng", "for = " + i);
+                                                        Log.d("LatLng",""+place.toString());
+                                                        Constant.marker[i] = mMap.addMarker(new MarkerOptions().position(place).title(Constant.cowID[i]));
+                                                        Log.d("MarkerAdd",""+i);
+                                                    }
+                                                    Log.d("MarkerAdd","Done");
+                                                    reloadflag = true;
+                                                }
+                                            }));
+                                            break;
+                                        } else if(Constant.jsonFailureflag){
+                                            Log.d("jsonFailureflag", "true");
+                                            Constant.jsonFailureflag = false;
+                                            reloadflag = true;
+                                            break;
+                                        } else {
+                                            Thread.sleep(5000);
+                                            if(Count == 400000000){
+                                                Count = 0;
+                                            }
+                                            Count += 1;
+                                            Log.d("Sleep",Count+"回目");
+                                        }
+                                    } catch (InterruptedException e) {
+                                        Log.e("error","InterruptedException");
+                                        break;
+                                    }
+                                }
+                            }
+                        }).start();
                     }
                 }
             }
@@ -83,11 +140,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapLoaded(){
         CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(35.9438234,139.3178846)).zoom(8).build();
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        Toast.makeText(this,"地図の描画完了", Toast.LENGTH_LONG).show();
         Constant.loadmapfinishedFlag = true;
-//        LatLng tokyo = new LatLng(35.689487, 139.691706);
-//        mMap.addMarker(new MarkerOptions().position(tokyo).title("Marker in Tokyo"));
-//        LatLng tokyodisneyland = new LatLng(35.632896,139.880394);
-//        mMap.addMarker(new MarkerOptions().position(tokyodisneyland).title("Marker in TokyoDisneyLand"));
+
+        //デバッグ用
+        Toast.makeText(this,"地図の描画完了", Toast.LENGTH_LONG).show();
     }
 }

@@ -17,6 +17,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 public class MyThread implements Runnable {
+
     @Override
     public void run() {
         final int CONNECTION_TIME_OUT = 30 * 1000;
@@ -70,6 +71,7 @@ public class MyThread implements Runnable {
         try {
             JSONArray jsonArray = new JSONArray(result.toString());
             Constant.MVoA = jsonArray.length();
+            Log.d("JSONArrayLength",""+Constant.MVoA);
             Constant.cowID = new String[Constant.MVoA];
             Constant.lat = new Double[Constant.MVoA];
             Constant.lng = new Double[Constant.MVoA];
@@ -85,10 +87,17 @@ public class MyThread implements Runnable {
                 Log.d("Lat", "" + Constant.lat[i]);
                 Log.d("Lng", "" + Constant.lng[i]);
             }
+            Constant.jsonflag = true;
             Log.d("CowData","Successful reception");
         } catch (JSONException e) {
             Log.e("error", "JSONArrayException");
         }
-        Constant.jsonflag = true;
+        if(!Constant.jsonflag){
+            Log.d("!jsonflag","in");
+            Constant.jsonFailureflag = true;
+        }
+        else {
+            Log.d("!jsonflag","out");
+        }
     }
 }
