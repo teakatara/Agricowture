@@ -40,21 +40,28 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         reloadbutton = findViewById(R.id.ReloadButton);
-        firstbootflag = false;
+        firstbootflag = true;
 
         final Handler handler = new Handler();
 
         reloadbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("loadmapfinishedFlag",""+Constant.loadmapfinishedFlag);
                 if (Constant.loadmapfinishedFlag){
+                    Log.d("reloadflag",""+reloadflag);
                     if(reloadflag) {
+                        Log.d("firstbootflag",""+firstbootflag);
                         if(firstbootflag) {
-                            for(int i = 0;i < Constant.MVoA;i++){
-                                Constant.marker[i].remove();
-                            }
+                            firstbootflag = false;
                         } else {
-                            firstbootflag = true;
+                            if(!Constant.jsonFailureflag) {
+                                for (int i = 0; i < Constant.MVoA; i++) {
+                                    Constant.marker[i].remove();
+                                }
+                            } else {
+                              Constant.jsonFailureflag = false;
+                            }
                         }
                         Count = 0;
                         reloadflag = false;
@@ -85,30 +92,25 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                                         Log.d("MarkerAdd",""+i);
                                                     }
                                                     Log.d("MarkerAdd","Done");
-                                                    reloadflag = true;
                                                 }
                                             }));
                                             break;
                                         } else if(Constant.jsonFailureflag){
-                                            Log.d("jsonFailureflag", "true");
-                                            Constant.jsonFailureflag = false;
-                                            reloadflag = true;
+                                            Log.d("jsonFailureflagin", "true");
                                             break;
                                         } else {
                                             Thread.sleep(5000);
-                                            if(Count == 400000000){
-                                                Count = 0;
-                                            }
-                                            Count += 1;
-                                            Log.d("Sleep",Count+"回目");
                                         }
                                     } catch (InterruptedException e) {
                                         Log.e("error","InterruptedException");
                                         break;
                                     }
                                 }
+                                reloadflag = true;
+                                Log.d("addMarker","end");
                             }
                         }).start();
+
                     }
                 }
             }
@@ -134,6 +136,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }
         mMap.setMyLocationEnabled(true);
         mMap.setOnMapLoadedCallback(this);
+
     }
 
     @Override
