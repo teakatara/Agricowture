@@ -13,6 +13,7 @@ class Constant {
     static boolean reloadflag = true;
     static boolean loadmapfinishedFlag = false;
     static int MVoA;
+    static int CowNum;
     static String[] cowID;
     static Double[] lat;
     static Double[] lng;

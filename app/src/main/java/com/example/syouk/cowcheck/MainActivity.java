@@ -144,7 +144,19 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(35.9438234,139.3178846)).zoom(8).build();
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         Constant.loadmapfinishedFlag = true;
-
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                String id = marker.getId();
+                Log.d("setOnMarkerClickListener","in");
+                Log.d("MarkerClickListener",""+id);
+                int num = Integer.parseInt(id.substring(1,2));
+                Log.d("num",""+num);
+                Constant.CowNum = (num % Constant.MVoA) + 1;
+                Log.d("CowNumber",""+Constant.CowNum);
+                return false;
+            }
+        });
         //デバッグ用
         Toast.makeText(this,"地図の描画完了", Toast.LENGTH_LONG).show();
     }
