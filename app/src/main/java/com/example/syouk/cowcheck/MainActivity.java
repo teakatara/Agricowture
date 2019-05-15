@@ -66,8 +66,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         Count = 0;
                         reloadflag = false;
                         Constant.jsonflag = false;
-                        MyThread myThread = new MyThread();
-                        Thread thread = new Thread(myThread);
+                        JsonThread jsonThread = new JsonThread();
+                        Thread thread = new Thread(jsonThread);
                         thread.start();
                         new Thread(new Runnable() {
                             @Override
@@ -154,6 +154,36 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 Log.d("num",""+num);
                 Constant.CowNum = (num % Constant.MVoA) + 1;
                 Log.d("CowNumber",""+Constant.CowNum);
+                DroneDialog droneDialog = new DroneDialog();
+                Bundle bundle = new Bundle();
+                bundle.putInt("CowNum",Constant.CowNum);
+                droneDialog.setArguments(bundle);
+                droneDialog.show(getFragmentManager(),"");
+                Log.d("dialog","end");
+                //ここから下を別ファイルに書く予定
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("thread","in");
+                        try{
+                            while (true){
+                                if(Constant.droneOK){
+                                    Log.d("droneOK","true");
+                                    Constant.droneOK = false;
+                                    break;
+                                } else if(Constant.droneWhileEscape){
+                                    Log.d("droneWhileEscape","true");
+                                    Constant.droneWhileEscape = false;
+                                    break;
+                                } else {
+                                    Thread.sleep(5000);
+                                }
+                            }
+                        }  catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
                 return false;
             }
         });
