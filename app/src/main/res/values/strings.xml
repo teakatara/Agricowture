@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CowCheck</string>
+    <string name="app_name">Agricowture</string>
     <string name="title_activity_main">Map</string>
     <string name="reloadbutton">更新</string>
 </resources>

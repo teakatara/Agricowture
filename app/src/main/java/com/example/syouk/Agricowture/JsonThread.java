@@ -1,4 +1,4 @@
-package com.example.syouk.cowcheck;
+package com.example.syouk.Agricowture;
 
 import android.util.Log;
 
@@ -16,12 +16,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-public class MyThread implements Runnable {
+public class JsonThread implements Runnable {
 
     @Override
     public void run() {
-        final int CONNECTION_TIME_OUT = 30 * 1000;
-        final int READ_TIME_OUT = 30 * 1000;
         HttpURLConnection con;
         URL url;
         String urlSt = "https://cowcheck.herokuapp.com/get";
@@ -32,8 +30,8 @@ public class MyThread implements Runnable {
             url = new URL(urlSt);
             con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
-            con.setConnectTimeout(CONNECTION_TIME_OUT);
-            con.setReadTimeout(READ_TIME_OUT);
+            con.setConnectTimeout(Constant.CONNECTION_TIME_OUT);
+            con.setReadTimeout(Constant.READ_TIME_OUT);
             con.setInstanceFollowRedirects(false);
             con.setDoInput(true);
             Log.d("URLConnection", "Connecting");

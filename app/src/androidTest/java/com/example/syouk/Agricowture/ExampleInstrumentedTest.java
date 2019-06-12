@@ -1,4 +1,4 @@
-package com.example.syouk.cowcheck;
+package com.example.syouk.Agricowture;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

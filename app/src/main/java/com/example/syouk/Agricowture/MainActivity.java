@@ -1,4 +1,4 @@
-package com.example.syouk.cowcheck;
+package com.example.syouk.Agricowture;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -66,8 +66,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         Count = 0;
                         reloadflag = false;
                         Constant.jsonflag = false;
-                        MyThread myThread = new MyThread();
-                        Thread thread = new Thread(myThread);
+                        JsonThread jsonThread = new JsonThread();
+                        Thread thread = new Thread(jsonThread);
                         thread.start();
                         new Thread(new Runnable() {
                             @Override
@@ -144,7 +144,52 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(35.9438234,139.3178846)).zoom(8).build();
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         Constant.loadmapfinishedFlag = true;
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                String id = marker.getId();
+                Log.d("setOnMarkerClickListener","in");
+                Log.d("MarkerClickListener",""+id);
+                int num = Integer.parseInt(id.substring(1,2));
+                Log.d("num",""+num);
+                Constant.CowNum = (num % Constant.MVoA) + 1;
+                Log.d("CowNumber",""+Constant.CowNum);
+                DroneDialog droneDialog = new DroneDialog();
+                Bundle bundle = new Bundle();
+                bundle.putInt("CowNum",Constant.CowNum);
+                droneDialog.setArguments(bundle);
+                droneDialog.show(getFragmentManager(),"");
+                Log.d("dialog","end");
 
+                //ここから下を別ファイルに書く予定
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("thread","in");
+                        try{
+                            while (true){
+                                if(Constant.droneOK){
+                                    Log.d("droneOK","true");
+
+                                    Constant.droneOK = false;
+                                    break;
+                                } else if(Constant.droneWhileEscape){
+                                    Log.d("droneWhileEscape","true");
+                                    Constant.droneWhileEscape = false;
+                                    break;
+                                } else {
+                                    Thread.sleep(5000);
+                                }
+                            }
+                        }  catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+
+                return false;
+            }
+        });
         //デバッグ用
         Toast.makeText(this,"地図の描画完了", Toast.LENGTH_LONG).show();
     }
