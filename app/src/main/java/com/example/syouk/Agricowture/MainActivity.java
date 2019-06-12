@@ -1,4 +1,4 @@
-package com.example.syouk.cowcheck;
+package com.example.syouk.Agricowture;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -160,6 +160,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 droneDialog.setArguments(bundle);
                 droneDialog.show(getFragmentManager(),"");
                 Log.d("dialog","end");
+
                 //ここから下を別ファイルに書く予定
                 new Thread(new Runnable() {
                     @Override
@@ -169,6 +170,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                             while (true){
                                 if(Constant.droneOK){
                                     Log.d("droneOK","true");
+
                                     Constant.droneOK = false;
                                     break;
                                 } else if(Constant.droneWhileEscape){
@@ -184,6 +186,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         }
                     }
                 }).start();
+
                 return false;
             }
         });

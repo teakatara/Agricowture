@@ -1,4 +1,4 @@
-package com.example.syouk.cowcheck;
+package com.example.syouk.Agricowture;
 
 import org.junit.Test;
 
