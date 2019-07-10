@@ -16,6 +16,7 @@ class Constant {
     static boolean loadmapfinishedFlag = false;
     static boolean droneOK = false;
     static boolean droneWhileEscape = false;
+    static boolean dronethreadOK = true;
     static int MVoA;
     static int CowNum;
     static String[] cowID;

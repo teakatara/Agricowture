@@ -2,4 +2,8 @@
     <string name="app_name">Agricowture</string>
     <string name="title_activity_main">Map</string>
     <string name="reloadbutton">更新</string>
+    <string name="map">マップ</string>
+    <string name="menu">メニュー</string>
+    <string name="calendar">カレンダー</string>
+    <string name="graph">グラフ</string>
 </resources>
