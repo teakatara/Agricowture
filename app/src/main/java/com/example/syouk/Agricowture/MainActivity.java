@@ -1,6 +1,7 @@
 package com.example.syouk.Agricowture;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,7 +25,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback , OnMapLoadedCallback {
 
     public static GoogleMap mMap;
-    public Button reloadbutton;
     private boolean reloadflag = true;
     private boolean firstbootflag;
 
@@ -39,6 +39,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        Button reloadbutton;
         reloadbutton = findViewById(R.id.ReloadButton);
         firstbootflag = true;
 
@@ -47,6 +48,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         reloadbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                //バグ防止
+                Constant.dronethreadOK = true;
+                Constant.droneOK = false;
+                Constant.droneWhileEscape = false;
+
                 Log.d("loadmapfinishedFlag",""+Constant.loadmapfinishedFlag);
                 if (Constant.loadmapfinishedFlag){
                     Log.d("reloadflag",""+reloadflag);
@@ -115,6 +122,16 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
         });
+
+        Button graphactivity_button;
+        graphactivity_button = findViewById(R.id.GraphActivity_button);
+        graphactivity_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplication(), GraphActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
 
@@ -147,46 +164,33 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                String id = marker.getId();
-                Log.d("setOnMarkerClickListener","in");
-                Log.d("MarkerClickListener",""+id);
-                int num = Integer.parseInt(id.substring(1,2));
-                Log.d("num",""+num);
-                Constant.CowNum = (num % Constant.MVoA) + 1;
-                Log.d("CowNumber",""+Constant.CowNum);
-                DroneDialog droneDialog = new DroneDialog();
-                Bundle bundle = new Bundle();
-                bundle.putInt("CowNum",Constant.CowNum);
-                droneDialog.setArguments(bundle);
-                droneDialog.show(getFragmentManager(),"");
-                Log.d("dialog","end");
+                    Log.d("droneOK",""+Constant.droneOK);
+                    Log.d("dronethreadOK",""+Constant.dronethreadOK);
+                    String id = marker.getId();
+                    Log.d("MarkerClickListener","in");
+                    Log.d("MarkerClickListener",""+id);
+                    int num = Integer.parseInt(id.substring(1));
+                    Log.d("num",""+num);
+                    Constant.CowNum = 0;
+                    Constant.CowNum = (num % Constant.MVoA) + 1;
+                    Log.d("CowNumber",""+Constant.CowNum);
+                    DroneDialog droneDialog = new DroneDialog();
+                    Bundle bundle = new Bundle();
+                    if(Constant.dronethreadOK) {
+                        bundle.putInt("CowNum",Constant.CowNum);
+                        droneDialog.setArguments(bundle);
+                        droneDialog.show(getFragmentManager(),"");
+                        Log.d("dialog","end");
 
-                //ここから下を別ファイルに書く予定
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d("thread","in");
-                        try{
-                            while (true){
-                                if(Constant.droneOK){
-                                    Log.d("droneOK","true");
-
-                                    Constant.droneOK = false;
-                                    break;
-                                } else if(Constant.droneWhileEscape){
-                                    Log.d("droneWhileEscape","true");
-                                    Constant.droneWhileEscape = false;
-                                    break;
-                                } else {
-                                    Thread.sleep(5000);
-                                }
-                            }
-                        }  catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                        DroneThread droneThread = new DroneThread();
+                        Thread dthread = new Thread(droneThread);
+                        dthread.start();
+                    } else {
+                        bundle.putInt("CowNum",0);
+                        droneDialog.setArguments(bundle);
+                        droneDialog.show(getFragmentManager(),"");
+                        Log.d("elsedialog","end");
                     }
-                }).start();
-
                 return false;
             }
         });
