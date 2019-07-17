@@ -1,6 +1,7 @@
 package com.example.syouk.Agricowture;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -123,12 +124,38 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+        //横をスライドすると出てくるメニューのグラフボタンのイベント
         Button graphactivity_button;
         graphactivity_button = findViewById(R.id.GraphActivity_button);
         graphactivity_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("Graph_Activity_button","push");
                 Intent intent = new Intent(getApplication(), GraphActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button calendaractivity_button;
+        calendaractivity_button = findViewById(R.id.CalendarActivity_button);
+        calendaractivity_button.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("LongLogTag")
+            @Override
+            public void onClick(View view) {
+                Log.d("Calendar_Activity_button","push");
+                Intent intent = new Intent(getApplication(), CalendarActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button cow_information_button;
+        cow_information_button = findViewById(R.id.Cow_Information_button);
+        cow_information_button.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("LongLogTag")
+            @Override
+            public void onClick(View view) {
+                Log.d("Calendar_Activity_button","push");
+                Intent intent = new Intent(getApplication(), CowinformationActivity.class);
                 startActivity(intent);
             }
         });

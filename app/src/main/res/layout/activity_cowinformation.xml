@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/drawer_layout3"
+    android:id="@+id/drawer_layout4"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
+
     <!-- The main content view -->
+
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context="com.example.syouk.Agricowture.GraphActivity">
+        tools:context="com.example.syouk.Agricowture.CowinformationActivity">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/graph"
+            android:text="@string/cow_information"
             android:textSize="20sp"
             android:textColor="@android:color/white"
             android:background="#3cb371"/>
@@ -50,6 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:text="@string/cow_information"/>
+
 
         <Button
             android:id="@+id/GraphActivity_button"

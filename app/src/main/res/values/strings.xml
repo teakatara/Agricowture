@@ -6,4 +6,10 @@
     <string name="menu">メニュー</string>
     <string name="calendar">カレンダー</string>
     <string name="graph">グラフ</string>
+    <string name="edit">編集</string>
+    <string name="date">日付</string>
+    <string name="detail">詳細</string>
+    <string name="save">保存</string>
+    <string name="cow_information">牛の情報</string>
+    <string name="hint">500文字以内で記入してください。</string>
 </resources>
