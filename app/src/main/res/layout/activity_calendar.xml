@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/drawer_layout3"
+    android:id="@+id/drawer_layout4"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
     <!-- The main content view -->
@@ -9,16 +9,70 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context="com.example.syouk.Agricowture.GraphActivity">
+        tools:context="com.example.syouk.Agricowture.CalendarActivity">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@string/calendar"
             android:gravity="center"
-            android:text="@string/graph"
             android:textSize="20sp"
             android:textColor="@android:color/white"
             android:background="@color/green"/>
+
+        <CalendarView
+            android:id="@+id/calendarView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:text="@string/date"
+                android:textSize="20sp"
+                android:gravity="center_vertical"/>
+
+            <TextView
+                android:id="@+id/date_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:textSize="20sp"
+                android:gravity="center_vertical"/>
+
+            <Button
+                android:id="@+id/edit_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:text="@string/edit"
+                android:layout_gravity="end"/>
+        </LinearLayout>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/detail"
+            android:textSize="20sp"/>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/detail_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                />
+
+        </ScrollView>
 
     </LinearLayout>
 
@@ -51,6 +105,7 @@
             android:layout_height="48dp"
             android:text="@string/cow_information"/>
 
+
         <Button
             android:id="@+id/GraphActivity_button"
             android:layout_width="match_parent"
@@ -65,5 +120,6 @@
 
 
     </LinearLayout>
+
 
 </android.support.v4.widget.DrawerLayout>

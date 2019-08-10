@@ -23,4 +23,5 @@ class Constant {
     static Double[] lat;
     static Double[] lng;
     static Marker[] marker;
+    static String detail_file_path;
 }

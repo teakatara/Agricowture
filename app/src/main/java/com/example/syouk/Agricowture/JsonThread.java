@@ -49,7 +49,7 @@ public class JsonThread implements Runnable {
                 String line;
                 while ((line = bufferedReader.readLine()) != null) {
                     Log.d("while", "true");
-                    Log.d("line", "" + line);
+                    Log.d("line", line);
                     result.append(line);
                     Log.d("result", "" + result);
                 }
