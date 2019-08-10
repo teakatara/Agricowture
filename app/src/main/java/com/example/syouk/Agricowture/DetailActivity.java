@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.KeyEvent;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -18,6 +19,7 @@ public class DetailActivity extends AppCompatActivity {
     private TextView date_text;
     private EditText editText;
     private Button save_button;
+    private Button back_button;
     private String detail_text = "";
     private String date;
     private String textfile_path;
@@ -26,7 +28,7 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         date = intent.getStringExtra("date");
         Log.d("date", date);
 
@@ -51,6 +53,31 @@ public class DetailActivity extends AppCompatActivity {
                 }
             }
         });
+
+        back_button = findViewById(R.id.back_button);
+        back_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("back_button","pushed");
+                Intent intent1 = new Intent();
+                intent1.putExtra("detail",detail_text);
+                setResult(RESULT_OK,intent1);
+                finish();
+            }
+        });
+
+    }
+
+    @Override
+    public boolean onKeyDown(int key_code, KeyEvent event) {
+        if (key_code == KeyEvent.KEYCODE_BACK) {
+            Log.d("BackKey","pushed");
+            Intent intent1 = new Intent();
+            intent1.putExtra("detail", detail_text);
+            setResult(RESULT_OK, intent1);
+            finish();
+        }
+        return true;
     }
 
     private void SaveFile_func() {

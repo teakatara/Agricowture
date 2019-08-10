@@ -24,9 +24,10 @@ public class CalendarActivity extends AppCompatActivity {
     private TextView date_text;
     private TextView detail_text;
     private Button edit_button;
+    private Button mapactivity_button;
     private String date;
-    private String test_detail = "";
-    private String file_content = null;
+    private String detail = "";
+    private String file_content = "";
     private boolean date_click_flag;
     private Context context;
     private HashMap<String,String> detail_filename;
@@ -35,6 +36,8 @@ public class CalendarActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
+
+        //ここから初期設定(化)
         Constant.detail_file_path = "/data/data/"+ getPackageName() + "/files/detail_text";
         Log.d("file path",Constant.detail_file_path);
         detail_filename = new HashMap<>();
@@ -49,6 +52,7 @@ public class CalendarActivity extends AppCompatActivity {
                 try {
                     FileReader fileReader = new FileReader(list[i]);
                     int data;
+                    file_content = "";
                     while ((data = fileReader.read()) != -1) {
                         file_content += (char) data;
                     }
@@ -69,10 +73,11 @@ public class CalendarActivity extends AppCompatActivity {
         }
 
         date_click_flag = false;
+        //ここまで
+
 
         date_text = findViewById(R.id.date_text);
         detail_text = findViewById(R.id.detail_text);
-
         calendarView = findViewById(R.id.calendarView);
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
@@ -82,9 +87,15 @@ public class CalendarActivity extends AppCompatActivity {
                 date = i + "年" + (i1 + 1) + "月" + i2 + "日";
                 date_text.setText(date);
                 Log.d("clickdate",date);
+                if((detail = detail_filename.get(date + ".txt")) != null){
+                    detail_text.setText(detail);
+                } else {
+                    detail_text.setText("");
+                }
 
             }
         });
+
 
         edit_button = findViewById(R.id.edit_button);
         edit_button.setOnClickListener(new View.OnClickListener() {
@@ -94,7 +105,8 @@ public class CalendarActivity extends AppCompatActivity {
                     Log.d("date",date);
                     Intent intent = new Intent(CalendarActivity.this,DetailActivity.class);
                     intent.putExtra("date",date);
-                    startActivity(intent);
+                    int request_code = 1000;
+                    startActivityForResult(intent,request_code);
 
 
                 } else {
@@ -105,7 +117,6 @@ public class CalendarActivity extends AppCompatActivity {
             }
         });
 
-        Button mapactivity_button;
         mapactivity_button = findViewById(R.id.MainActivity_button);
         mapactivity_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,5 +125,14 @@ public class CalendarActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    protected void onActivityResult(int request_code, int result_code, Intent intent){
+        super.onActivityResult(request_code, result_code, intent);
+
+        if(request_code == 1000 && result_code == RESULT_OK && intent != null){
+            String detail_text = intent.getStringExtra("detail");
+            detail_filename.put(date + ".txt", detail_text);
+        }
     }
 }

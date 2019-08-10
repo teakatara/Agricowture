@@ -38,7 +38,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:orientation="vertical"
-        android:background="#3cb371" >
+        android:background="@color/green" >
 
         <TextView
             android:layout_width="match_parent"
