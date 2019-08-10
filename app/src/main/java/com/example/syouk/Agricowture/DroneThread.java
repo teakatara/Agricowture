@@ -30,7 +30,7 @@ public class DroneThread implements Runnable {
                     Log.d("droneOK", "true");
                     Log.d("dronethread CowNum",""+Constant.CowNum);
                     urlSt = "https://cowcheck.herokuapp.com/flightdrone/"+String.valueOf(Constant.CowNum);//←constantクラスを通じてURLを変える　Constant.CowNum
-                    Log.d("urlSt",""+urlSt);
+                    Log.d("urlSt",urlSt);
                     url = new URL(urlSt);
                     con = (HttpURLConnection) url.openConnection();
                     con.setRequestMethod("GET");
@@ -55,9 +55,9 @@ public class DroneThread implements Runnable {
                         String line;
                         line = bufferedReader.readLine();
                         Log.d("while", "true");
-                        Log.d("line", "" + line);
+                        Log.d("line", line);
                         result.append(line);
-                        Log.d("result", "" + result);
+                        Log.d("result", ""+result);
                         bufferedReader.close();
                         inReader.close();
                         in.close();

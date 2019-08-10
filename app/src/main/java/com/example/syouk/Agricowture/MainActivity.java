@@ -95,7 +95,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                                         Log.d("MarkerAdd", "for = " + i);
                                                         LatLng place = new LatLng(Constant.lat[i], Constant.lng[i]);
                                                         Log.d("LatLng", "for = " + i);
-                                                        Log.d("LatLng",""+place.toString());
+                                                        Log.d("LatLng",place.toString());
                                                         Constant.marker[i] = mMap.addMarker(new MarkerOptions().position(place).title(Constant.cowID[i]));
                                                         Log.d("MarkerAdd",""+i);
                                                     }
