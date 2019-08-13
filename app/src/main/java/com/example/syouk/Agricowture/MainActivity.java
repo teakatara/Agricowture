@@ -23,14 +23,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback , OnMapLoadedCallback {
 
     public static GoogleMap mMap;
     private boolean reloadflag = true;
     private boolean firstbootflag;
-
-    //デバッグ用
-    private long Count;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +72,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                               Constant.jsonFailureflag = false;
                             }
                         }
-                        Count = 0;
                         reloadflag = false;
                         Constant.jsonflag = false;
                         JsonThread jsonThread = new JsonThread();
@@ -86,6 +86,27 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                     Log.d("jsonflag",""+Constant.jsonflag);
                                     try{
                                         if(Constant.jsonflag){
+
+                                            JSONArray jsonArray = new JSONArray(Constant.result_text);
+                                            Constant.MVoA = jsonArray.length();
+                                            Log.d("JSONArrayLength",""+Constant.MVoA);
+                                            Constant.cowID = new String[Constant.MVoA];
+                                            Constant.lat = new Double[Constant.MVoA];
+                                            Constant.lng = new Double[Constant.MVoA];
+                                            for (int i = 0; i < Constant.MVoA; i++) {
+                                                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                                Constant.cowID[i] = jsonObject.getString("CowID");
+                                                Constant.lat[i] = jsonObject.getDouble("Lat");
+                                                Constant.lng[i] = jsonObject.getDouble("Lng");
+
+                                                Log.d("CowID", "" + Constant.cowID[i]);
+                                                Log.d("Lat", "" + Constant.lat[i]);
+                                                Log.d("Lng", "" + Constant.lng[i]);
+                                            }
+
+                                            Log.d("CowData","Successful reception");
+
+
                                             Log.d("MarkerAdd","Start");
                                             Constant.marker = new Marker[Constant.MVoA];
                                             handler.post(new Thread(new Runnable() {
@@ -111,6 +132,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                         }
                                     } catch (InterruptedException e) {
                                         Log.e("error","InterruptedException");
+                                        break;
+                                    } catch (JSONException e) {
+                                        Log.e("error","JSONException");
                                         break;
                                     }
                                 }
