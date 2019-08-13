@@ -2,10 +2,6 @@ package com.example.syouk.Agricowture;
 
 import android.util.Log;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -57,7 +53,11 @@ public class JsonThread implements Runnable {
                 inReader.close();
                 in.close();
 
-                Log.d("json", "" + result);
+                Constant.result_text = result.toString();
+
+                Log.d("json", Constant.result_text);
+
+                Constant.jsonflag = true;
             }
         } catch (FileNotFoundException e) {
             Log.e("error", "FileNotFoundException");
@@ -66,30 +66,7 @@ public class JsonThread implements Runnable {
         } catch (IOException e) {
             Log.e("error", "IOException");
         }
-        try {
-            JSONArray jsonArray = new JSONArray(result.toString());
-            Constant.MVoA = jsonArray.length();
-            Log.d("JSONArrayLength",""+Constant.MVoA);
-            Constant.cowID = new String[Constant.MVoA];
-            Constant.lat = new Double[Constant.MVoA];
-            Constant.lng = new Double[Constant.MVoA];
-            for (int i = 0; i < Constant.MVoA; i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                Constant.cowID[i] = jsonObject.getString("CowID");
-                Constant.lat[i] = jsonObject.getDouble("Lat");
-                Constant.lng[i] = jsonObject.getDouble("Lng");
-            }
-            //デバッグ用
-            for (int i = 0; i < Constant.MVoA; i++) {
-                Log.d("CowID", "" + Constant.cowID[i]);
-                Log.d("Lat", "" + Constant.lat[i]);
-                Log.d("Lng", "" + Constant.lng[i]);
-            }
-            Constant.jsonflag = true;
-            Log.d("CowData","Successful reception");
-        } catch (JSONException e) {
-            Log.e("error", "JSONArrayException");
-        }
+
         if(!Constant.jsonflag){
             Log.d("!jsonflag","in");
             Constant.jsonFailureflag = true;
