@@ -20,6 +20,36 @@
             android:textColor="@android:color/white"
             android:background="@color/green"/>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/cow_id_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="20sp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/estrus_information"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:layout_gravity="end"
+                    android:contentDescription="@string/description"/>
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/chart"
             android:layout_width="match_parent"
@@ -27,6 +57,13 @@
             android:layout_weight="1">
 
         </com.github.mikephil.charting.charts.LineChart>
+
+        <Button
+            android:id="@+id/video_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:text="@string/video"/>
     </LinearLayout>
 
     <!-- The navigation drawer -->

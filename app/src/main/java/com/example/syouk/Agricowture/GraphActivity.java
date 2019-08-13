@@ -52,9 +52,14 @@ public class GraphActivity extends AppCompatActivity {
         lineChart.setDragEnabled(false);
         lineChart.setScaleEnabled(false);
         lineChart.getAxisRight().setEnabled(false);
+        lineChart.setDescriptionTextSize(0f);
+        lineChart.getXAxis().setTextSize(15f);
+        lineChart.setExtraLeftOffset(lineChart.getExtraLeftOffset() + 10);
+        lineChart.setExtraRightOffset(lineChart.getExtraRightOffset() + 20);
 
 
         YAxis yAxis = lineChart.getAxisLeft();
+        yAxis.setTextSize(15f);
         yAxis.setStartAtZero(true);
 
         ArrayList<LineDataSet> dataSets = new ArrayList<>();
@@ -66,7 +71,7 @@ public class GraphActivity extends AppCompatActivity {
             value.add(new Entry(amount[i],i));
         }
 
-        LineDataSet valueDataSet = new LineDataSet(value,"牛１");
+        LineDataSet valueDataSet = new LineDataSet(value,"");
         valueDataSet.setCircleColor(Color.rgb(60,179,113));
         valueDataSet.setColor(Color.rgb(60,179,113));
         valueDataSet.setValueTextSize(15f);
