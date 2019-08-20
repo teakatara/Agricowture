@@ -1,6 +1,5 @@
 package com.example.syouk.Agricowture;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,12 +19,8 @@ import java.util.HashMap;
 
 public class CalendarActivity extends AppCompatActivity {
 
-    private CalendarView calendarView;
-    private Context context;
     private TextView dateText;
     private TextView detailText;
-    private Button editButton;
-    private Button mapActivityButton;
     private String date;
     private String detail = "";
     private String fileContent = "";
@@ -36,7 +31,6 @@ public class CalendarActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
-
 
         //ここから初期設定(化)
         Constant.detailFilePath = MyApplication.getAppContext().getFilesDir().getPath() + "/detailText";
@@ -79,7 +73,7 @@ public class CalendarActivity extends AppCompatActivity {
 
         dateText = findViewById(R.id.dateText);
         detailText = findViewById(R.id.detailText);
-        calendarView = findViewById(R.id.calendarView);
+        CalendarView calendarView = findViewById(R.id.calendarView);
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int i, int i1, int i2) {
@@ -98,7 +92,7 @@ public class CalendarActivity extends AppCompatActivity {
         });
 
 
-        editButton = findViewById(R.id.editButton);
+        Button editButton = findViewById(R.id.editButton);
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -118,7 +112,7 @@ public class CalendarActivity extends AppCompatActivity {
             }
         });
 
-        mapActivityButton = findViewById(R.id.MainActivityButton);
+        Button mapActivityButton = findViewById(R.id.MainActivityButton);
         mapActivityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
