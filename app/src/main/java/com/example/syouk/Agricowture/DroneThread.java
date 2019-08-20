@@ -22,7 +22,7 @@ public class DroneThread implements Runnable {
         URL url;
         String urlSt;
         StringBuilder result = new StringBuilder();
-        Constant.dronethreadOK = false;
+        Constant.droneThreadOK = false;
 
         try{
             while (true){
@@ -77,22 +77,21 @@ public class DroneThread implements Runnable {
                 }
             }
         } catch (InterruptedException e) {
+            Log.e("error","InterruptedException");
             e.printStackTrace();
-            Constant.droneOK = false;
-            Constant.droneWhileEscape = false;
         } catch (ProtocolException e) {
+            Log.e("error","ProtocolException");
             e.printStackTrace();
-            Constant.droneOK = false;
-            Constant.droneWhileEscape = false;
         } catch (MalformedURLException e) {
+            Log.e("error","MalformedURLException");
             e.printStackTrace();
-            Constant.droneOK = false;
-            Constant.droneWhileEscape = false;
         } catch (IOException e) {
+            Log.e("error","IOException");
             e.printStackTrace();
+        } finally {
             Constant.droneOK = false;
             Constant.droneWhileEscape = false;
+            Constant.droneThreadOK = true;
         }
-        Constant.dronethreadOK = true;
     }
 }

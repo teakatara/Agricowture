@@ -18,12 +18,11 @@ public class JsonThread implements Runnable {
     public void run() {
         HttpURLConnection con;
         URL url;
-        String urlSt = "https://cowcheck.herokuapp.com/get";
         StringBuilder result = new StringBuilder();
 
 
         try {
-            url = new URL(urlSt);
+            url = new URL(Constant.urlSt);
             con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
             con.setConnectTimeout(Constant.CONNECTION_TIME_OUT);
@@ -53,26 +52,21 @@ public class JsonThread implements Runnable {
                 inReader.close();
                 in.close();
 
-                Constant.result_text = result.toString();
+                Constant.resultText = result.toString();
 
-                Log.d("json", Constant.result_text);
+                Log.d("json", Constant.resultText);
 
-                Constant.jsonflag = true;
+                Constant.jsonFlag = true;
             }
         } catch (FileNotFoundException e) {
             Log.e("error", "FileNotFoundException");
+            e.printStackTrace();
         } catch (MalformedURLException e) {
             Log.e("error", "MalformedURLException");
+            e.printStackTrace();
         } catch (IOException e) {
             Log.e("error", "IOException");
-        }
-
-        if(!Constant.jsonflag){
-            Log.d("!jsonflag","in");
-            Constant.jsonFailureflag = true;
-        }
-        else {
-            Log.d("!jsonflag","out");
+            e.printStackTrace();
         }
     }
 }

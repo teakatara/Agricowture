@@ -38,7 +38,7 @@
                 android:gravity="center_vertical"/>
 
             <TextView
-                android:id="@+id/date_text"
+                android:id="@+id/dateText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
@@ -46,7 +46,7 @@
                 android:gravity="center_vertical"/>
 
             <Button
-                android:id="@+id/edit_button"
+                android:id="@+id/editButton"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="5"
@@ -66,7 +66,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/detail_text"
+                android:id="@+id/detailText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
@@ -94,26 +94,19 @@
             android:text="@string/menu"/>
 
         <Button
-            android:id="@+id/MainActivity_button"
+            android:id="@+id/MainActivityButton"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:text="@string/map" />
 
         <Button
-            android:id="@+id/cow_information_button"
+            android:id="@+id/CowInformationButton"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:text="@string/cow_information"/>
 
-
         <Button
-            android:id="@+id/GraphActivity_button"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="@string/graph" />
-
-        <Button
-            android:id="@+id/CalendarActivity_button"
+            android:id="@+id/CalendarActivityButton"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:text="@string/calendar" />

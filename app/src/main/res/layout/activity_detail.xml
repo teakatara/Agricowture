@@ -21,14 +21,14 @@
             android:textColor="@android:color/white"
             android:background="@color/green"/>
         <TextView
-            android:id="@+id/date_text"
+            android:id="@+id/dateText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="20sp"
             android:text=""/>
 
         <EditText
-            android:id="@+id/edit_text"
+            android:id="@+id/editText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:maxLength="500"
@@ -53,7 +53,7 @@
             android:baselineAligned="false">
 
             <Button
-                android:id="@+id/back_button"
+                android:id="@+id/backButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/back"
@@ -70,7 +70,7 @@
             android:baselineAligned="false">
 
             <Button
-                android:id="@+id/save_button"
+                android:id="@+id/saveButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/save"

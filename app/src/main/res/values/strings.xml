@@ -13,4 +13,6 @@
     <string name="cow_information">牛の情報</string>
     <string name="hint">500文字以内で記入してください。</string>
     <string name="back">戻る</string>
+    <string name="video">動画</string>
+    <string name="description">この画像は牛が発情しているかを示しています</string>
 </resources>

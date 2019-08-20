@@ -1,69 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/drawer_layout3"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-    <!-- The main content view -->
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.syouk.Agricowture.GraphActivity">
+
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context="com.example.syouk.Agricowture.GraphActivity">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/graph"
-            android:textSize="20sp"
-            android:textColor="@android:color/white"
-            android:background="@color/green"/>
-
-    </LinearLayout>
-
-    <!-- The navigation drawer -->
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/graph"
+        android:textSize="20sp"
+        android:textColor="@android:color/white"
+        android:background="@color/green"/>
 
     <LinearLayout
-        android:layout_width="240dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:orientation="vertical"
-        android:background="@color/green" >
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:textSize="30sp"
-            android:gravity="center"
-            android:textColor="#ffffff"
-            android:text="@string/menu"/>
+            android:id="@+id/cowIdText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="35sp"/>
 
-        <Button
-            android:id="@+id/MainActivity_button"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="@string/map" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/cow_information_button"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="@string/cow_information"/>
-
-        <Button
-            android:id="@+id/GraphActivity_button"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="@string/graph" />
-
-        <Button
-            android:id="@+id/CalendarActivity_button"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="@string/calendar" />
+            <ImageView
+                android:id="@+id/estrusInformation"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="end"
+                android:contentDescription="@string/description"/>
+        </LinearLayout>
 
 
     </LinearLayout>
 
-</android.support.v4.widget.DrawerLayout>
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/chart"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+    </com.github.mikephil.charting.charts.LineChart>
+
+    <Button
+        android:id="@+id/videoButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:text="@string/video"/>
+</LinearLayout>

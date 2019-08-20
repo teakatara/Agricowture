@@ -22,7 +22,7 @@
 
         <Button
             android:text="@string/reloadbutton"
-            android:id="@+id/ReloadButton"
+            android:id="@+id/reloadButton"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:layout_gravity="end"
@@ -49,25 +49,19 @@
             android:text="@string/menu"/>
 
         <Button
-            android:id="@+id/MainActivity_button"
+            android:id="@+id/MainActivityButton"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:text="@string/map" />
 
         <Button
-            android:id="@+id/Cow_Information_button"
+            android:id="@+id/CowInformationButton"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:text="@string/cow_information"/>
 
         <Button
-            android:id="@+id/GraphActivity_button"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="@string/graph" />
-
-        <Button
-            android:id="@+id/CalendarActivity_button"
+            android:id="@+id/CalendarActivityButton"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:text="@string/calendar" />
