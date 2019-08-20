@@ -4,25 +4,24 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.view.KeyEvent;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class DetailActivity extends AppCompatActivity {
 
-    private TextView date_text;
+    private TextView dateText;
     private EditText editText;
-    private Button save_button;
-    private Button back_button;
-    private String detail_text = "";
+    private Button saveButton;
+    private Button backButton;
+    private String detailText = "";
     private String date;
-    private String textfile_path;
+    private String textFilePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,35 +31,34 @@ public class DetailActivity extends AppCompatActivity {
         date = intent.getStringExtra("date");
         Log.d("date", date);
 
-        textfile_path = Constant.detail_file_path + "/" + date + ".txt";
-        File detail_file = new File(textfile_path);
+        textFilePath = Constant.detailFilePath + "/" + date + ".txt";
 
-        date_text = findViewById(R.id.date_text);
-        date_text.setText(date);
+        dateText = findViewById(R.id.dateText);
+        dateText.setText(date);
 
-        editText = findViewById(R.id.edit_text);
+        editText = findViewById(R.id.editText);
 
-        save_button = findViewById(R.id.save_button);
-        save_button.setOnClickListener(new View.OnClickListener() {
+        saveButton = findViewById(R.id.saveButton);
+        saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                detail_text = editText.getText().toString();
-                if (detail_text.length() != 0) {
-                    Log.d("detail_text", detail_text);
-                    SaveFile_func();
+                detailText = editText.getText().toString();
+                if (detailText.length() != 0) {
+                    Log.d("detailText", detailText);
+                    SaveFileFunc();
                 } else {
-                    Log.d("detail_text", "no input");
+                    Log.d("detailText", "no input");
                 }
             }
         });
 
-        back_button = findViewById(R.id.back_button);
-        back_button.setOnClickListener(new View.OnClickListener() {
+        backButton = findViewById(R.id.backButton);
+        backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("back_button","pushed");
+                Log.d("backButton","pushed");
                 Intent intent1 = new Intent();
-                intent1.putExtra("detail",detail_text);
+                intent1.putExtra("detail",detailText);
                 setResult(RESULT_OK,intent1);
                 finish();
             }
@@ -69,22 +67,23 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onKeyDown(int key_code, KeyEvent event) {
-        if (key_code == KeyEvent.KEYCODE_BACK) {
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
             Log.d("BackKey","pushed");
             Intent intent1 = new Intent();
-            intent1.putExtra("detail", detail_text);
+            intent1.putExtra("detail", detailText);
             setResult(RESULT_OK, intent1);
             finish();
         }
         return true;
     }
 
-    private void SaveFile_func() {
-        try (FileOutputStream fileOutputstream =new FileOutputStream(textfile_path)) {
-            fileOutputstream.write(detail_text.getBytes());
+    private void SaveFileFunc() {
+        try (FileOutputStream fileOutputstream =new FileOutputStream(textFilePath)) {
+            fileOutputstream.write(detailText.getBytes());
             Log.d("file","created");
         } catch (IOException e) {
+            Log.e("error","IOException");
             e.printStackTrace();
         }
     }

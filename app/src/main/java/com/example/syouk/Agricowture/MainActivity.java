@@ -23,14 +23,18 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback , OnMapLoadedCallback {
 
-    public static GoogleMap mMap;
-    private boolean reloadflag = true;
-    private boolean firstbootflag;
+    final String finalUrl = "https://cowcheck.herokuapp.com/get";
 
-    //デバッグ用
-    private long Count;
+    public static GoogleMap mMap;
+
+    private boolean reloadFlag = true;
+    private int counter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,52 +44,72 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        Button reloadbutton;
-        reloadbutton = findViewById(R.id.ReloadButton);
-        firstbootflag = true;
+        Button reloadButton;
+        reloadButton = findViewById(R.id.reloadButton);
 
         final Handler handler = new Handler();
 
-        reloadbutton.setOnClickListener(new View.OnClickListener() {
+        reloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 //バグ防止
-                Constant.dronethreadOK = true;
+                Constant.droneThreadOK = true;
                 Constant.droneOK = false;
                 Constant.droneWhileEscape = false;
+                counter = 0;
 
-                Log.d("loadmapfinishedFlag",""+Constant.loadmapfinishedFlag);
-                if (Constant.loadmapfinishedFlag){
-                    Log.d("reloadflag",""+reloadflag);
-                    if(reloadflag) {
-                        Log.d("firstbootflag",""+firstbootflag);
-                        if(firstbootflag) {
-                            firstbootflag = false;
-                        } else {
-                            if(!Constant.jsonFailureflag) {
-                                for (int i = 0; i < Constant.MVoA; i++) {
-                                    Constant.marker[i].remove();
-                                }
-                            } else {
-                              Constant.jsonFailureflag = false;
+                Log.d("mapLoadFinishedFlag",""+Constant.mapLoadFinishedFlag);
+                if (Constant.mapLoadFinishedFlag){
+                    Log.d("reloadFlag",""+reloadFlag);
+                    if(reloadFlag) {
+                        if(!Constant.jsonFailureFlag) {
+                            for (int i = 0; i < Constant.MVoA; i++) {
+                                Constant.marker[i].remove();
                             }
+                            Constant.jsonFailureFlag = true;
                         }
-                        Count = 0;
-                        reloadflag = false;
-                        Constant.jsonflag = false;
+                        reloadFlag = false;
+                        Constant.jsonFlag = false;
                         JsonThread jsonThread = new JsonThread();
                         Thread thread = new Thread(jsonThread);
+                        Constant.urlSt = finalUrl;
                         thread.start();
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
 
                                 while(true){
-                                    Log.d("jsonFailureflag",""+Constant.jsonFailureflag);
-                                    Log.d("jsonflag",""+Constant.jsonflag);
+                                    Log.d("jsonFailureFlag",""+Constant.jsonFailureFlag);
+                                    Log.d("jsonFlag",""+Constant.jsonFlag);
                                     try{
-                                        if(Constant.jsonflag){
+                                        if(Constant.jsonFlag){
+
+                                            JSONArray jsonArray = new JSONArray(Constant.resultText);
+                                            Constant.MVoA = jsonArray.length();
+                                            Log.d("JSONArrayLength",""+Constant.MVoA);
+                                            Constant.cowID = new String[Constant.MVoA];
+                                            Constant.lat = new Double[Constant.MVoA];
+                                            Constant.lng = new Double[Constant.MVoA];
+                                            Constant.estrus = new boolean[Constant.MVoA];
+                                            for (int i = 0; i < Constant.MVoA; i++) {
+                                                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                                Constant.cowID[i] = jsonObject.getString("CowID");
+                                                Constant.lat[i] = jsonObject.getDouble("Lat");
+                                                Constant.lng[i] = jsonObject.getDouble("Lng");
+//                                                Constant.estrus[i] = jsonObject.getBoolean("estrus");
+                                                //デバッグ用
+                                                Constant.estrus[i] = (i % 2) == 0;
+
+                                                Log.d("CowID", Constant.cowID[i]);
+                                                Log.d("Lat", "" + Constant.lat[i]);
+                                                Log.d("Lng", "" + Constant.lng[i]);
+                                                Log.d("estrus","" + Constant.estrus[i]);
+                                            }
+
+                                            Log.d("CowData","Successful reception");
+
+
                                             Log.d("MarkerAdd","Start");
                                             Constant.marker = new Marker[Constant.MVoA];
                                             handler.post(new Thread(new Runnable() {
@@ -102,19 +126,25 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                                     Log.d("MarkerAdd","Done");
                                                 }
                                             }));
-                                            break;
-                                        } else if(Constant.jsonFailureflag){
-                                            Log.d("jsonFailureflagin", "true");
+                                            Constant.jsonFailureFlag = false;
                                             break;
                                         } else {
                                             Thread.sleep(5000);
+                                            counter++;
+                                            if(counter > 100){
+                                                Log.d("counter","timeout");
+                                                break;
+                                            }
                                         }
                                     } catch (InterruptedException e) {
                                         Log.e("error","InterruptedException");
                                         break;
+                                    } catch (JSONException e) {
+                                        Log.e("error","JSONException");
+                                        break;
                                     }
                                 }
-                                reloadflag = true;
+                                reloadFlag = true;
                                 Log.d("addMarker","end");
                             }
                         }).start();
@@ -125,37 +155,26 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         //横をスライドすると出てくるメニューのグラフボタンのイベント
-        Button graphactivity_button;
-        graphactivity_button = findViewById(R.id.GraphActivity_button);
-        graphactivity_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d("Graph_Activity_button","push");
-                Intent intent = new Intent(getApplication(), GraphActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        Button calendaractivity_button;
-        calendaractivity_button = findViewById(R.id.CalendarActivity_button);
-        calendaractivity_button.setOnClickListener(new View.OnClickListener() {
+        Button calendarActivityButton;
+        calendarActivityButton = findViewById(R.id.CalendarActivityButton);
+        calendarActivityButton.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("LongLogTag")
             @Override
             public void onClick(View view) {
-                Log.d("Calendar_Activity_button","push");
+                Log.d("CalendarActivityButton","push");
                 Intent intent = new Intent(getApplication(), CalendarActivity.class);
                 startActivity(intent);
             }
         });
 
         Button cow_information_button;
-        cow_information_button = findViewById(R.id.Cow_Information_button);
+        cow_information_button = findViewById(R.id.CowInformationButton);
         cow_information_button.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("LongLogTag")
             @Override
             public void onClick(View view) {
-                Log.d("Calendar_Activity_button","push");
-                Intent intent = new Intent(getApplication(), CowinformationActivity.class);
+                Log.d("CalendarActivityButton","push");
+                Intent intent = new Intent(getApplication(), CowInformationActivity.class);
                 startActivity(intent);
             }
         });
@@ -187,12 +206,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapLoaded(){
         CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(35.9438234,139.3178846)).zoom(8).build();
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        Constant.loadmapfinishedFlag = true;
+        Constant.mapLoadFinishedFlag = true;
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
                     Log.d("droneOK",""+Constant.droneOK);
-                    Log.d("dronethreadOK",""+Constant.dronethreadOK);
+                    Log.d("droneThreadOK",""+Constant.droneThreadOK);
                     String id = marker.getId();
                     Log.d("MarkerClickListener","in");
                     Log.d("MarkerClickListener",""+id);
@@ -203,20 +222,20 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     Log.d("CowNumber",""+Constant.CowNum);
                     DroneDialog droneDialog = new DroneDialog();
                     Bundle bundle = new Bundle();
-                    if(Constant.dronethreadOK) {
+                    if(Constant.droneThreadOK) {
                         bundle.putInt("CowNum",Constant.CowNum);
                         droneDialog.setArguments(bundle);
                         droneDialog.show(getFragmentManager(),"");
-                        Log.d("dialog","end");
+                        Log.d("Dialog","end");
 
                         DroneThread droneThread = new DroneThread();
-                        Thread dthread = new Thread(droneThread);
-                        dthread.start();
+                        Thread dThread = new Thread(droneThread);
+                        dThread.start();
                     } else {
                         bundle.putInt("CowNum",0);
                         droneDialog.setArguments(bundle);
                         droneDialog.show(getFragmentManager(),"");
-                        Log.d("elsedialog","end");
+                        Log.d("elseDialog","end");
                     }
                 return false;
             }

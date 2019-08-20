@@ -21,30 +21,31 @@ import java.util.HashMap;
 public class CalendarActivity extends AppCompatActivity {
 
     private CalendarView calendarView;
-    private TextView date_text;
-    private TextView detail_text;
-    private Button edit_button;
-    private Button mapactivity_button;
+    private Context context;
+    private TextView dateText;
+    private TextView detailText;
+    private Button editButton;
+    private Button mapActivityButton;
     private String date;
     private String detail = "";
-    private String file_content = "";
-    private boolean date_click_flag;
-    private Context context;
-    private HashMap<String,String> detail_filename;
+    private String fileContent = "";
+    private boolean dateClickFlag;
+    private HashMap<String,String> detailFilename;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
 
+
         //ここから初期設定(化)
-        Constant.detail_file_path = "/data/data/"+ getPackageName() + "/files/detail_text";
-        Log.d("file path",Constant.detail_file_path);
-        detail_filename = new HashMap<>();
+        Constant.detailFilePath = MyApplication.getAppContext().getFilesDir().getPath() + "/detailText";
+        Log.d("file path",Constant.detailFilePath);
+        detailFilename = new HashMap<>();
         //詳細ファイルの読み込み
-        File dir = new File(Constant.detail_file_path);
+        File dir = new File(Constant.detailFilePath);
         Log.d("File dir","instanced");
-        if(dir.exists()) {
+        if(!dir.mkdir()) {
             File[] list = dir.listFiles();
             Log.d("File list", "created");
             for (int i = 0; i < list.length; i++) {
@@ -52,73 +53,73 @@ public class CalendarActivity extends AppCompatActivity {
                 try {
                     FileReader fileReader = new FileReader(list[i]);
                     int data;
-                    file_content = "";
+                    fileContent = "";
                     while ((data = fileReader.read()) != -1) {
-                        file_content += (char) data;
+                        fileContent += (char) data;
                     }
                     fileReader.close();
                 } catch (FileNotFoundException e) {
+                    Log.e("error","FileNotFoundException");
                     e.printStackTrace();
                 } catch (IOException e) {
+                    Log.e("error","IOException");
                     e.printStackTrace();
                 }
                 Log.d("File read", "completed");
-                detail_filename.put(list[i].getName(), file_content);
-                Log.d(list[i].getName() + "\n", "" + file_content);
+                detailFilename.put(list[i].getName(), fileContent);
+                Log.d(list[i].getName() + "\n", "" + fileContent);
             }
         } else {
-            Log.d("mkdir","start");
-            dir.mkdir();
-            Log.d("mkdir","success");
+            Log.d("mkdir","Done");
         }
 
-        date_click_flag = false;
+        dateClickFlag = false;
         //ここまで
 
 
-        date_text = findViewById(R.id.date_text);
-        detail_text = findViewById(R.id.detail_text);
+        dateText = findViewById(R.id.dateText);
+        detailText = findViewById(R.id.detailText);
         calendarView = findViewById(R.id.calendarView);
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int i, int i1, int i2) {
 
-                date_click_flag = true;
+                dateClickFlag = true;
                 date = i + "年" + (i1 + 1) + "月" + i2 + "日";
-                date_text.setText(date);
-                Log.d("clickdate",date);
-                if((detail = detail_filename.get(date + ".txt")) != null){
-                    detail_text.setText(detail);
+                dateText.setText(date);
+                Log.d("clickDate",date);
+                if((detail = detailFilename.get(date + ".txt")) != null){
+                    detailText.setText(detail);
                 } else {
-                    detail_text.setText("");
+                    detailText.setText("");
                 }
 
             }
         });
 
 
-        edit_button = findViewById(R.id.edit_button);
-        edit_button.setOnClickListener(new View.OnClickListener() {
+        editButton = findViewById(R.id.editButton);
+        editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(date_click_flag){
+                if(dateClickFlag){
                     Log.d("date",date);
                     Intent intent = new Intent(CalendarActivity.this,DetailActivity.class);
                     intent.putExtra("date",date);
-                    int request_code = 1000;
-                    startActivityForResult(intent,request_code);
+                    int requestCode = 1000;
+                    startActivityForResult(intent,requestCode);
 
 
                 } else {
-                    Log.d("date_click_flag","false");
+                    Log.d("dateClickFlag","false");
                     Toast toast = Toast.makeText(CalendarActivity.this,"一回は曜日にタップしてください", Toast.LENGTH_SHORT);
                     toast.show();
                 }
             }
         });
 
-        mapactivity_button = findViewById(R.id.MainActivity_button);
-        mapactivity_button.setOnClickListener(new View.OnClickListener() {
+        mapActivityButton = findViewById(R.id.MainActivityButton);
+        mapActivityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplication(),MainActivity.class);
@@ -127,12 +128,12 @@ public class CalendarActivity extends AppCompatActivity {
         });
     }
 
-    protected void onActivityResult(int request_code, int result_code, Intent intent){
-        super.onActivityResult(request_code, result_code, intent);
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent){
+        super.onActivityResult(requestCode, resultCode, intent);
 
-        if(request_code == 1000 && result_code == RESULT_OK && intent != null){
-            String detail_text = intent.getStringExtra("detail");
-            detail_filename.put(date + ".txt", detail_text);
+        if(requestCode == 1000 && resultCode == RESULT_OK && intent != null){
+            String detailText = intent.getStringExtra("detail");
+            detailFilename.put(date + ".txt", detailText);
         }
     }
 }
