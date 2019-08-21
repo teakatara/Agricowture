@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -162,13 +163,13 @@ public class GraphActivity extends AppCompatActivity {
 
 
 
-//        video_button = findViewById(R.id.videoButton);
-//        video_button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//
-//            }
-//        });
+        video_button = findViewById(R.id.videoButton);
+        video_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent1 = new Intent(getApplication(),VideoListActivity.class);
+                startActivity(intent1);
+            }
+        });
     }
 }
