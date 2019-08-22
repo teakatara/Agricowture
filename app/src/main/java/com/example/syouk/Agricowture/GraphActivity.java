@@ -68,6 +68,7 @@ public class GraphActivity extends AppCompatActivity {
         lineChart.getAxisRight().setEnabled(false);
         lineChart.setDescriptionTextSize(0f);
         lineChart.getXAxis().setTextSize(15f);
+        lineChart.setExtraTopOffset(lineChart.getExtraTopOffset()+ 2);
         lineChart.setExtraLeftOffset(lineChart.getExtraLeftOffset() + 10);
         lineChart.setExtraRightOffset(lineChart.getExtraRightOffset() + 20);
 
@@ -153,15 +154,6 @@ public class GraphActivity extends AppCompatActivity {
                 }
             }
         }).start();
-
-
-
-
-//        ArrayList<LineDataSet> dataSets = new ArrayList<>();
-
-//        ArrayList<String> xValues = new ArrayList<>(Arrays.asList(date));
-
-
 
         video_button = findViewById(R.id.videoButton);
         video_button.setOnClickListener(new View.OnClickListener() {
