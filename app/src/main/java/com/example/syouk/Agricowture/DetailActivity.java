@@ -15,12 +15,8 @@ import java.io.IOException;
 
 public class DetailActivity extends AppCompatActivity {
 
-    private TextView dateText;
     private EditText editText;
-    private Button saveButton;
-    private Button backButton;
     private String detailText = "";
-    private String date;
     private String textFilePath;
 
     @Override
@@ -28,17 +24,17 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         final Intent intent = getIntent();
-        date = intent.getStringExtra("date");
+        String date = intent.getStringExtra("date");
         Log.d("date", date);
 
         textFilePath = Constant.detailFilePath + "/" + date + ".txt";
 
-        dateText = findViewById(R.id.dateText);
+        TextView dateText = findViewById(R.id.dateText);
         dateText.setText(date);
 
         editText = findViewById(R.id.editText);
 
-        saveButton = findViewById(R.id.saveButton);
+        Button saveButton = findViewById(R.id.saveButton);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -52,7 +48,7 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
 
-        backButton = findViewById(R.id.backButton);
+        Button backButton = findViewById(R.id.backButton);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

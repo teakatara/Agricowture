@@ -1,11 +1,13 @@
 package com.example.syouk.Agricowture;
 
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -16,6 +18,7 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.renderer.YAxisRenderer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,33 +36,31 @@ public class GraphActivity extends AppCompatActivity {
     final String finalUrl = "https://cowcheck.herokuapp.com/graphdata/";
 
     private LineChart lineChart;
+    private TextView cowNameText;
     private float[] amount;
     private String[] date;
     private int days;
     private int position;
     private int counter;
-    private TextView cow_id_text;
-    private ImageView estrus_image;
-    private Button video_button;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph);
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         position = intent.getIntExtra("position",-1);
 
         final Handler handler = new Handler();
 
-        cow_id_text = findViewById(R.id.cowIdText);
-        cow_id_text.setText(Constant.cowID[position]);
+        cowNameText = findViewById(R.id.cowIdText);
+        cowNameText.setText(Constant.cowName[position]);
 
-        estrus_image = findViewById(R.id.estrusInformation);
+        ImageView estrusImage = findViewById(R.id.estrusInformation);
         if (Constant.estrus[position]){
-            estrus_image.setImageResource(R.drawable.abnormal);
+            estrusImage.setImageResource(R.drawable.abnormal);
         } else {
-            estrus_image.setImageResource(R.drawable.nomal);
+            estrusImage.setImageResource(R.drawable.nomal);
         }
 
         lineChart = findViewById(R.id.chart);
@@ -73,11 +74,29 @@ public class GraphActivity extends AppCompatActivity {
         lineChart.setExtraRightOffset(lineChart.getExtraRightOffset() + 20);
 
 
+
         YAxis yAxis = lineChart.getAxisLeft();
         yAxis.setTextSize(15f);
         yAxis.setStartAtZero(true);
 
+        lineChart.setRendererLeftYAxis(new YAxisRenderer(lineChart.getViewPortHandler(),
+                yAxis, lineChart.getTransformer(yAxis.getAxisDependency())){
+            @Override
+            protected void drawYLabels(Canvas c, float fixedPosition,
+                                       float[] positions, float offset){
+                final int to = mYAxis.isDrawTopYLabelEntryEnabled()
+                        ? mYAxis.mEntryCount
+                        : (mYAxis.mEntryCount - 1);
 
+                // draw
+                for (int i = 0; i < to; i++) {
+                    // -----------ここに文字を入れる------------------- //
+                    String text = mYAxis.getFormattedLabel(i) + "m";
+
+                    c.drawText(text, fixedPosition, positions[i * 2 + 1] + offset, mAxisLabelPaint);
+                }
+            }
+        });
         Constant.jsonFlag = false;
         counter = 0;
         JsonThread jsonThread = new JsonThread();
@@ -87,6 +106,7 @@ public class GraphActivity extends AppCompatActivity {
 //        thread.start();
         //デバッグ用
         Constant.jsonFlag = true;
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -155,13 +175,51 @@ public class GraphActivity extends AppCompatActivity {
             }
         }).start();
 
-        video_button = findViewById(R.id.videoButton);
-        video_button.setOnClickListener(new View.OnClickListener() {
+
+
+
+//        ArrayList<LineDataSet> dataSets = new ArrayList<>();
+
+//        ArrayList<String> xValues = new ArrayList<>(Arrays.asList(date));
+
+
+        Button videoButton = findViewById(R.id.videoButton);
+        videoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent1 = new Intent(getApplication(),VideoListActivity.class);
                 startActivity(intent1);
             }
         });
+
+        Button nameChangeButton = findViewById(R.id.nameButton);
+        nameChangeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent1 = new Intent(getApplication(), NameChangeActivity.class);
+                int requestCode = 1000;
+                intent1.putExtra("Position",position);
+                startActivityForResult(intent1,requestCode);
+            }
+        });
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Log.d("BackKey","pushed");
+            Intent intent1 = new Intent();
+            setResult(RESULT_OK, intent1);
+            finish();
+        }
+        return true;
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent){
+        super.onActivityResult(requestCode, resultCode, intent);
+
+        if(requestCode == 1000 && resultCode == RESULT_OK && intent != null){
+            cowNameText.setText(Constant.cowName[position]);
+        }
     }
 }

@@ -2,6 +2,8 @@ package com.example.syouk.Agricowture;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -9,7 +11,9 @@ import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -27,11 +31,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Objects;
+
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback , OnMapLoadedCallback {
 
     final String finalUrl = "https://cowcheck.herokuapp.com/get";
 
     public static GoogleMap mMap;
+    public static AlertDialog.Builder ad;
 
     private boolean reloadFlag = true;
     private int counter = 0;
@@ -49,14 +61,33 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         final Handler handler = new Handler();
 
+        ad = new AlertDialog.Builder(this);
+
+        Constant.cowNameMap = new HashMap<>();
+        Constant.cowNameFilePath = MyApplication.getAppContext().getFilesDir().getPath() + "/cowName.txt";
+        File cowNameFile = new File(Constant.cowNameFilePath);
+
+        if(cowNameFile.exists()) {
+            Log.d("cowNameFile","exists");
+            try (BufferedReader in = new BufferedReader(new FileReader(cowNameFile))) {
+                String line;
+                while ((line = in.readLine()) != null) {
+                    Log.d("in",String.valueOf(in));
+                    String[] readLine = line.split(",", 0);
+                    Constant.cowNameMap.put(readLine[0], readLine[1]);
+                    Log.d("readLine", readLine[0] + ":" + readLine[1]);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         reloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 //バグ防止
                 Constant.droneThreadOK = true;
-                Constant.droneOK = false;
-                Constant.droneWhileEscape = false;
                 counter = 0;
 
                 Log.d("mapLoadFinishedFlag",""+Constant.mapLoadFinishedFlag);
@@ -98,6 +129,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                                 Constant.lat[i] = jsonObject.getDouble("Lat");
                                                 Constant.lng[i] = jsonObject.getDouble("Lng");
 //                                                Constant.estrus[i] = jsonObject.getBoolean("estrus");
+
                                                 //デバッグ用
                                                 Constant.estrus[i] = (i % 2) == 0;
 
@@ -105,6 +137,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                                 Log.d("Lat", "" + Constant.lat[i]);
                                                 Log.d("Lng", "" + Constant.lng[i]);
                                                 Log.d("estrus","" + Constant.estrus[i]);
+                                            }
+
+                                            Constant.cowName = new String[Constant.MVoA];
+                                            for(int i = 0; i < Constant.MVoA; i++){
+                                                Constant.cowName[i] = Constant.cowNameMap.get(Constant.cowID[i]);
+                                                if(Constant.cowName[i] == null){
+                                                    Constant.cowName[i] = Constant.cowID[i];
+                                                }
                                             }
 
                                             Log.d("CowData","Successful reception");
@@ -120,7 +160,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                                         LatLng place = new LatLng(Constant.lat[i], Constant.lng[i]);
                                                         Log.d("LatLng", "for = " + i);
                                                         Log.d("LatLng",place.toString());
-                                                        Constant.marker[i] = mMap.addMarker(new MarkerOptions().position(place).title(Constant.cowID[i]));
+                                                        Constant.marker[i] = mMap.addMarker(new MarkerOptions().position(place).title(Constant.cowName[i]));
                                                         Log.d("MarkerAdd",""+i);
                                                     }
                                                     Log.d("MarkerAdd","Done");
@@ -154,6 +194,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+
         //横をスライドすると出てくるメニューのグラフボタンのイベント
         Button calendarActivityButton;
         calendarActivityButton = findViewById(R.id.CalendarActivityButton);
@@ -167,9 +208,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        Button cow_information_button;
-        cow_information_button = findViewById(R.id.CowInformationButton);
-        cow_information_button.setOnClickListener(new View.OnClickListener() {
+        Button cowInformationButton;
+        cowInformationButton = findViewById(R.id.CowInformationButton);
+        cowInformationButton.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("LongLogTag")
             @Override
             public void onClick(View view) {
@@ -210,33 +251,61 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                    Log.d("droneOK",""+Constant.droneOK);
-                    Log.d("droneThreadOK",""+Constant.droneThreadOK);
-                    String id = marker.getId();
-                    Log.d("MarkerClickListener","in");
-                    Log.d("MarkerClickListener",""+id);
-                    int num = Integer.parseInt(id.substring(1));
-                    Log.d("num",""+num);
-                    Constant.CowNum = 0;
-                    Constant.CowNum = (num % Constant.MVoA) + 1;
-                    Log.d("CowNumber",""+Constant.CowNum);
-                    DroneDialog droneDialog = new DroneDialog();
-                    Bundle bundle = new Bundle();
-                    if(Constant.droneThreadOK) {
-                        bundle.putInt("CowNum",Constant.CowNum);
-                        droneDialog.setArguments(bundle);
-                        droneDialog.show(getFragmentManager(),"");
-                        Log.d("Dialog","end");
+                Log.d("droneThreadOK",""+Constant.droneThreadOK);
+                String id = marker.getId();
+                Log.d("MarkerClickListener","in");
+                Log.d("MarkerClickListener",""+id);
+                int num = Integer.parseInt(id.substring(1));
+                Log.d("num",""+num);
+                Constant.cowNum = 0;
+                Constant.cowNum = (num % Constant.MVoA) + 1;
+                Log.d("CowNumber",""+Constant.cowNum);
 
-                        DroneThread droneThread = new DroneThread();
-                        Thread dThread = new Thread(droneThread);
-                        dThread.start();
-                    } else {
-                        bundle.putInt("CowNum",0);
-                        droneDialog.setArguments(bundle);
-                        droneDialog.show(getFragmentManager(),"");
-                        Log.d("elseDialog","end");
-                    }
+                if(Constant.droneThreadOK) {
+                    ad.setTitle("ここにドローンを向かわせますか？");
+                    ad.setMessage(Constant.cowName[Constant.cowNum - 1] + "にドローンを向かわせますか？");
+                    // OKボタン
+                    ad.setPositiveButton("はい", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Log.d("Dialog", "positive");
+                            DroneThread droneThread = new DroneThread();
+                            Thread dThread = new Thread(droneThread);
+                            dThread.start();
+                        }
+                    });
+
+                    // NGボタン
+                    ad.setNegativeButton("いいえ", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Log.d("Dialog", "negative");
+                        }
+                    });
+                    AlertDialog alertDialog = ad.create();
+                    WindowManager.LayoutParams lp = Objects.requireNonNull(alertDialog.getWindow()).getAttributes();
+                    lp.gravity = Gravity.BOTTOM;
+                    alertDialog.getWindow().setAttributes(lp);
+                    alertDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+                    alertDialog.setCancelable(false);
+                    alertDialog.show();
+
+                } else {
+                    ad.setTitle("処理中");
+                    ad.setMessage("いつまでもこの表示が出る場合は更新ボタンを押してください");
+                    ad.setPositiveButton("OK", null);
+                    AlertDialog alertDialog = ad.create();
+                    WindowManager.LayoutParams lp = Objects.requireNonNull(alertDialog.getWindow()).getAttributes();
+                    lp.gravity = Gravity.BOTTOM;
+                    alertDialog.getWindow().setAttributes(lp);
+                    alertDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+                    alertDialog.setCancelable(false);
+                    alertDialog.show();
+
+                }
+
                 return false;
             }
         });
