@@ -14,26 +14,28 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 public class CowInformationActivity extends AppCompatActivity {
-    private Bitmap bmp;
-    private Button mapActivityButton;
-    private Button calendarActivityButton;
+
+    private ListView listView;
+    private ArrayList<List_item> listItems;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cowinformation);
 
-        ListView listView = findViewById(R.id.listView);
+        listView = findViewById(R.id.listView);
 
-        ArrayList<List_item> listItems = new ArrayList<>();
+        listItems = new ArrayList<>();
         for(int i = 0; i < Constant.MVoA; i++) {
             Log.d("cowInformation", "for" + (i + 1));
+            Bitmap bmp;
             if (Constant.estrus[i]) {
                 bmp = BitmapFactory.decodeResource(getResources(), R.drawable.abnormal);
             } else {
                 bmp = BitmapFactory.decodeResource(getResources(), R.drawable.nomal);
             }
-            List_item item = new List_item(bmp, Constant.cowID[i]);
+            List_item item = new List_item(bmp, Constant.cowName[i]);
             listItems.add(item);
         }
         ListAdapter adapter = new ListAdapter(this, R.layout.list_item, listItems);
@@ -49,11 +51,12 @@ public class CowInformationActivity extends AppCompatActivity {
                 Log.d( "position",String.valueOf(position));
                 Intent intent = new Intent(getApplication(),GraphActivity.class);
                 intent.putExtra("position",position);
-                startActivity(intent);
+                int requestCode = 100;
+                startActivityForResult(intent,requestCode);
             }
         });
 
-        mapActivityButton = findViewById(R.id.MainActivityButton);
+        Button mapActivityButton = findViewById(R.id.MainActivityButton);
         mapActivityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -62,7 +65,7 @@ public class CowInformationActivity extends AppCompatActivity {
             }
         });
 
-        calendarActivityButton = findViewById(R.id.CalendarActivityButton);
+        Button calendarActivityButton = findViewById(R.id.CalendarActivityButton);
         calendarActivityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -70,5 +73,27 @@ public class CowInformationActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent){
+        super.onActivityResult(requestCode, resultCode, intent);
+
+        if(requestCode == 100 && resultCode == RESULT_OK && intent != null){
+            listItems = new ArrayList<>();
+            for (int i = 0; i < Constant.MVoA; i++){
+                Log.d("cowInformation", "for" + (i + 1));
+                Bitmap bmp;
+                if (Constant.estrus[i]) {
+                    bmp = BitmapFactory.decodeResource(getResources(), R.drawable.abnormal);
+                } else {
+                    bmp = BitmapFactory.decodeResource(getResources(), R.drawable.nomal);
+                }
+                List_item item = new List_item(bmp, Constant.cowName[i]);
+                listItems.add(item);
+            }
+            ListAdapter adapter = new ListAdapter(this, R.layout.list_item, listItems);
+            Log.d("adapterSet", "start");
+            listView.setAdapter(adapter);
+            Log.d("adapterSet","end");
+        }
     }
 }

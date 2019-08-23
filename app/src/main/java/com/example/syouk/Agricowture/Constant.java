@@ -5,6 +5,8 @@ import android.content.Context;
 
 import com.google.android.gms.maps.model.Marker;
 
+import java.util.HashMap;
+
 class Constant {
     @SuppressLint("StaticFieldLeak")
     static Context CONTEXT;
@@ -13,18 +15,18 @@ class Constant {
     static boolean jsonFlag = false;
     static boolean jsonFailureFlag = true;
     static boolean mapLoadFinishedFlag = false;
-    static boolean droneOK = false;
-    static boolean droneWhileEscape = false;
     static boolean droneThreadOK = true;
     static int MVoA = 0;
-    static int CowNum;
+    static int cowNum;
     static String[] cowID;
     static Double[] lat;
     static Double[] lng;
     static boolean[] estrus;
     static String[] cowName;
+    static HashMap<String,String> cowNameMap;
     static Marker[] marker;
     static String detailFilePath;
+    static String cowNameFilePath;
     static String resultText;
     static String urlSt;
 }

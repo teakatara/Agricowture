@@ -25,60 +25,46 @@ public class DroneThread implements Runnable {
         Constant.droneThreadOK = false;
 
         try{
-            while (true){
-                if(Constant.droneOK) {
-                    Log.d("droneOK", "true");
-                    Log.d("dronethread CowNum",""+Constant.CowNum);
-                    urlSt = "https://cowcheck.herokuapp.com/flightdrone/"+String.valueOf(Constant.CowNum);//←constantクラスを通じてURLを変える　Constant.CowNum
-                    Log.d("urlSt",urlSt);
-                    url = new URL(urlSt);
-                    con = (HttpURLConnection) url.openConnection();
-                    con.setRequestMethod("GET");
-                    con.setConnectTimeout(Constant.CONNECTION_TIME_OUT);
-                    con.setReadTimeout(Constant.READ_TIME_OUT);
-                    con.setInstanceFollowRedirects(false);
-                    con.setDoInput(true);
-                    Log.d("URLConnection", "Connecting");
-                    con.connect();
-                    int statusCode = con.getResponseCode();
-                    Log.d("statusCode", "" + statusCode);
-                    if (statusCode == HttpURLConnection.HTTP_OK) {
-                        Log.d("DroneHTTPURLConnection", "Success");
-                        //ここから続き書く。
+            Log.d("droneOK", "true");
+            Log.d("droneThread CowNum",""+Constant.cowNum);
+            urlSt = "https://cowcheck.herokuapp.com/flightdrone/"+String.valueOf(Constant.cowNum);//←constantクラスを通じてURLを変える　Constant.CowNum
+            Log.d("urlSt",urlSt);
+            url = new URL(urlSt);
+            con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            con.setConnectTimeout(Constant.CONNECTION_TIME_OUT);
+            con.setReadTimeout(Constant.READ_TIME_OUT);
+            con.setInstanceFollowRedirects(false);
+            con.setDoInput(true);
+            Log.d("URLConnection", "Connecting");
+            con.connect();
+            int statusCode = con.getResponseCode();
+            Log.d("statusCode", "" + statusCode);
+            if (statusCode == HttpURLConnection.HTTP_OK) {
+                Log.d("DroneHTTPURLConnection", "Success");
+                //ここから続き書く。
 
-                        final InputStream in = con.getInputStream();
-                        Log.d("in", "" + in);
-                        final InputStreamReader inReader = new InputStreamReader(in, StandardCharsets.UTF_8);
-                        Log.d("inReader", "" + inReader);
-                        final BufferedReader bufferedReader = new BufferedReader(inReader);
-                        Log.d("bufferedReader", "" + bufferedReader);
-                        String line;
-                        line = bufferedReader.readLine();
-                        Log.d("while", "true");
-                        Log.d("line", line);
-                        result.append(line);
-                        Log.d("result", ""+result);
-                        bufferedReader.close();
-                        inReader.close();
-                        in.close();
+                final InputStream in = con.getInputStream();
+                Log.d("in", "" + in);
+                final InputStreamReader inReader = new InputStreamReader(in, StandardCharsets.UTF_8);
+                Log.d("inReader", "" + inReader);
+                final BufferedReader bufferedReader = new BufferedReader(inReader);
+                Log.d("bufferedReader", "" + bufferedReader);
+                String line;
+                line = bufferedReader.readLine();
+                Log.d("while", "true");
+                Log.d("line", line);
+                result.append(line);
+                Log.d("result", "" + result);
+                bufferedReader.close();
+                inReader.close();
+                in.close();
 
-                        //ドローンの状態をサーバーから取得
-                        Log.d("response", "" + line);
-                    }
-
-                    Constant.droneOK = false;
-                    break;
-                } else if(Constant.droneWhileEscape){
-                    Log.d("droneWhileEscape","true");
-                    Constant.droneWhileEscape = false;
-                    break;
-                } else {
-                    Thread.sleep(5000);
-                }
+                //ドローンの状態をサーバーから取得
+                Log.d("response", "" + line);
+            } else {
+                Log.d("DroneHTTPURLConnection","failed");
             }
-        } catch (InterruptedException e) {
-            Log.e("error","InterruptedException");
-            e.printStackTrace();
         } catch (ProtocolException e) {
             Log.e("error","ProtocolException");
             e.printStackTrace();
@@ -89,8 +75,6 @@ public class DroneThread implements Runnable {
             Log.e("error","IOException");
             e.printStackTrace();
         } finally {
-            Constant.droneOK = false;
-            Constant.droneWhileEscape = false;
             Constant.droneThreadOK = true;
         }
     }

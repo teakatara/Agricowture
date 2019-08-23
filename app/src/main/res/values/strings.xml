@@ -15,5 +15,9 @@
     <string name="back">戻る</string>
     <string name="video">動画</string>
     <string name="nameChange">名前の変更</string>
+    <string name="afterName">変更前の名前</string>
+    <string name="beforeName">変更後の名前</string>
+    <string name="hint2">名前を入力してください。</string>
+    <string name="arrow">↓</string>
     <string name="description">この画像は牛が発情しているかを示しています</string>
 </resources>
