@@ -38,9 +38,6 @@ public class GraphActivity extends AppCompatActivity {
     private int days;
     private int position;
     private int counter;
-    private TextView cow_id_text;
-    private ImageView estrus_image;
-    private Button video_button;
 
 
     @Override
@@ -52,14 +49,14 @@ public class GraphActivity extends AppCompatActivity {
 
         final Handler handler = new Handler();
 
-        cow_id_text = findViewById(R.id.cowIdText);
-        cow_id_text.setText(Constant.cowID[position]);
+        TextView cowIdText = findViewById(R.id.cowIdText);
+        cowIdText.setText(Constant.cowID[position]);
 
-        estrus_image = findViewById(R.id.estrusInformation);
+        ImageView estrusImage = findViewById(R.id.estrusInformation);
         if (Constant.estrus[position]){
-            estrus_image.setImageResource(R.drawable.abnormal);
+            estrusImage.setImageResource(R.drawable.abnormal);
         } else {
-            estrus_image.setImageResource(R.drawable.nomal);
+            estrusImage.setImageResource(R.drawable.nomal);
         }
 
         lineChart = findViewById(R.id.chart);
@@ -155,8 +152,10 @@ public class GraphActivity extends AppCompatActivity {
             }
         }).start();
 
-        video_button = findViewById(R.id.videoButton);
-        video_button.setOnClickListener(new View.OnClickListener() {
+
+
+        Button videoButton = findViewById(R.id.videoButton);
+        videoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent1 = new Intent(getApplication(),VideoListActivity.class);
