@@ -39,9 +39,8 @@ public class CowInformationActivity extends AppCompatActivity {
             listItems.add(item);
         }
         ListAdapter adapter = new ListAdapter(this, R.layout.list_item, listItems);
-        Log.d("adapterSet", "start");
         listView.setAdapter(adapter);
-        Log.d("adapterSet","end");
+        Log.d("adapterSet","Done");
 
 
 
@@ -60,7 +59,18 @@ public class CowInformationActivity extends AppCompatActivity {
         mapActivityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("Main(Map)ActivityButton","pushed");
                 Intent intent = new Intent(getApplication(),MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button videoActivityButton = findViewById(R.id.VideoActivityButton);
+        videoActivityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("VideoActivityButton","pushed");
+                Intent intent = new Intent(getApplication(),VideoListActivity.class);
                 startActivity(intent);
             }
         });
@@ -69,6 +79,7 @@ public class CowInformationActivity extends AppCompatActivity {
         calendarActivityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("CalenderActivityButton","pushed");
                 Intent intent = new Intent(getApplication(),CalendarActivity.class);
                 startActivity(intent);
             }
