@@ -45,39 +45,26 @@
         android:orientation="horizontal"
         android:baselineAligned="false">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="1"
-            android:baselineAligned="false">
-
             <Button
                 android:id="@+id/backButton"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="@string/back"
                 android:layout_gravity="center"
-                android:baselineAligned="false"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="1"
-            android:baselineAligned="false">
+                android:baselineAligned="false"
+                tools:ignore="ButtonStyle" />
 
             <Button
                 android:id="@+id/saveButton"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="@string/save"
                 android:layout_gravity="center"
-                android:baselineAligned="false"/>
+                android:baselineAligned="false"
+                tools:ignore="ButtonStyle" />
 
-        </LinearLayout>
     </LinearLayout>
 
 

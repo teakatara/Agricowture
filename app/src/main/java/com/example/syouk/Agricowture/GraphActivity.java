@@ -28,16 +28,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class GraphActivity extends AppCompatActivity {
-    private String JSON = "[{\"amount\":\"3.9\",\"date\":\"8月23日\"},{\"amount\":\"2.1\",\"date\":\"8月24日\"},{\"amount\":\"1.9\",\"date\":\"8月25日\"},{\"amount\":\"3.2\",\"date\":\"8月26日\"},{\"amount\":\"5.5\",\"date\":\"8月27日\"},{\"amount\":\"8.2\",\"date\":\"8月28日\"},{\"amount\":\"0.4\",\"date\":\"8月29日\"}]";
+    private String JSON = "[{\"amount\":\"39\",\"time\":\"8月23日\"},{\"amount\":\"21\",\"time\":\"8月24日\"},{\"amount\":\"19\",\"time\":\"8月25日\"},{\"amount\":\"32\",\"time\":\"8月26日\"},{\"amount\":\"55\",\"time\":\"8月27日\"},{\"amount\":\"82\",\"time\":\"8月28日\"}]";
     private ArrayList<String> xValues;
     private ArrayList<LineDataSet> dataSets;
 
     //ここのURLを変える
-    final String finalUrl = "https://cowcheck.herokuapp.com/graphdata/";
+    final String finalUrl = "https://1b51f412.jp.ngrok.io/graphdata/";
 
     private LineChart lineChart;
     private TextView cowNameText;
-    private float[] amount;
+    private int[] amount;
     private String[] date;
     private int days;
     private int position;
@@ -90,7 +90,6 @@ public class GraphActivity extends AppCompatActivity {
 
                 // draw
                 for (int i = 0; i < to; i++) {
-                    // -----------ここに文字を入れる------------------- //
                     String text = mYAxis.getFormattedLabel(i) + "m";
 
                     c.drawText(text, fixedPosition, positions[i * 2 + 1] + offset, mAxisLabelPaint);
@@ -101,30 +100,31 @@ public class GraphActivity extends AppCompatActivity {
         counter = 0;
         JsonThread jsonThread = new JsonThread();
         Thread thread = new Thread(jsonThread);
-        Constant.urlSt = finalUrl + String.valueOf(position);
+        Constant.urlSt = finalUrl + Constant.cowID[position];
         Log.d("finalUrl",finalUrl);
-//        thread.start();
+        thread.start();
         //デバッグ用
-        Constant.jsonFlag = true;
+//        Constant.jsonFlag = true;
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while (true) {
-                    Log.d("jsonFlag", String.valueOf(Constant.jsonFlag));
-                    try {
+                try {
+                    while (true) {
+                        Log.d("jsonFlag", String.valueOf(Constant.jsonFlag));
+
                         if (Constant.jsonFlag) {
                             //テスト用
-                            JSONArray jsonArray = new JSONArray(JSON);
+//                                JSONArray jsonArray = new JSONArray(JSON);
                             //本番用
-//                            JSONArray jsonArray = new JSONArray(Constant.resultText);
+                            JSONArray jsonArray = new JSONArray(Constant.resultText);
                             days = jsonArray.length();
-                            amount = new float[days];
+                            amount = new int[days];
                             date = new String[days];
                             for (int i = 0; i < days; i++) {
                                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                amount[i] = Float.valueOf(jsonObject.getString("amount"));
-                                date[i] = jsonObject.getString("date");
+                                amount[i] = Integer.parseInt(jsonObject.getString("moving"));
+                                date[i] = jsonObject.getString("time");
                                 Log.d("amount", String.valueOf(amount[i]));
                                 Log.d("date", date[i]);
                             }
@@ -133,13 +133,13 @@ public class GraphActivity extends AppCompatActivity {
                             xValues = new ArrayList<>(Arrays.asList(date));
 
                             ArrayList<Entry> value = new ArrayList<>();
-                            for (int i = 0; i < days; i++){
-                                value.add(new Entry(amount[i],i));
+                            for (int i = 0; i < days; i++) {
+                                value.add(new Entry(amount[i], i));
                             }
 
-                            LineDataSet valueDataSet = new LineDataSet(value,Constant.cowID[position]);
-                            valueDataSet.setCircleColor(Color.rgb(60,179,113));
-                            valueDataSet.setColor(Color.rgb(60,179,113));
+                            LineDataSet valueDataSet = new LineDataSet(value, Constant.cowID[position]);
+                            valueDataSet.setCircleColor(Color.rgb(60, 179, 113));
+                            valueDataSet.setColor(Color.rgb(60, 179, 113));
                             valueDataSet.setValueTextSize(15f);
                             valueDataSet.setCircleSize(7f);
                             valueDataSet.setLineWidth(3f);
@@ -148,11 +148,11 @@ public class GraphActivity extends AppCompatActivity {
                             handler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Log.d("lineChartData","set");
-                                    lineChart.setData(new LineData(xValues,dataSets));
+                                    Log.d("lineChartData", "set");
+                                    lineChart.setData(new LineData(xValues, dataSets));
                                     lineChart.notifyDataSetChanged();
                                     lineChart.invalidate();
-                                    Log.d("lineChartData","finish");
+                                    Log.d("lineChartData", "finish");
                                 }
                             });
                             break;
@@ -164,33 +164,16 @@ public class GraphActivity extends AppCompatActivity {
                                 break;
                             }
                         }
-                    } catch (InterruptedException e) {
-                        Log.e("error","InterruptedException");
-                        e.printStackTrace();
-                    } catch (JSONException e) {
-                        Log.e("error","JSONException");
-                        e.printStackTrace();
                     }
+                } catch (InterruptedException e) {
+                    Log.e("error","InterruptedException");
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    Log.e("error","JSONException");
+                    e.printStackTrace();
                 }
             }
         }).start();
-
-
-
-
-//        ArrayList<LineDataSet> dataSets = new ArrayList<>();
-
-//        ArrayList<String> xValues = new ArrayList<>(Arrays.asList(date));
-
-
-        Button videoButton = findViewById(R.id.videoButton);
-        videoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent1 = new Intent(getApplication(),VideoListActivity.class);
-                startActivity(intent1);
-            }
-        });
 
         Button nameChangeButton = findViewById(R.id.nameButton);
         nameChangeButton.setOnClickListener(new View.OnClickListener() {

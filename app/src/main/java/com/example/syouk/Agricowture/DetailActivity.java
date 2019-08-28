@@ -19,6 +19,8 @@ public class DetailActivity extends AppCompatActivity {
     private String detailText = "";
     private String textFilePath;
 
+    protected Boolean flag;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,13 +28,20 @@ public class DetailActivity extends AppCompatActivity {
         final Intent intent = getIntent();
         String date = intent.getStringExtra("date");
         Log.d("date", date);
+        String temText = intent.getStringExtra("detail");
+
+        flag = false;
+
+        editText = findViewById(R.id.editText);
+        if(temText != null){
+            editText.setText(temText);
+        }
 
         textFilePath = Constant.detailFilePath + "/" + date + ".txt";
 
         TextView dateText = findViewById(R.id.dateText);
         dateText.setText(date);
 
-        editText = findViewById(R.id.editText);
 
         Button saveButton = findViewById(R.id.saveButton);
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -55,6 +64,7 @@ public class DetailActivity extends AppCompatActivity {
                 Log.d("backButton","pushed");
                 Intent intent1 = new Intent();
                 intent1.putExtra("detail",detailText);
+                intent1.putExtra("flag",flag);
                 setResult(RESULT_OK,intent1);
                 finish();
             }
@@ -68,6 +78,7 @@ public class DetailActivity extends AppCompatActivity {
             Log.d("BackKey","pushed");
             Intent intent1 = new Intent();
             intent1.putExtra("detail", detailText);
+            intent1.putExtra("flag",flag);
             setResult(RESULT_OK, intent1);
             finish();
         }
@@ -77,6 +88,7 @@ public class DetailActivity extends AppCompatActivity {
     private void SaveFileFunc() {
         try (FileOutputStream fileOutputstream =new FileOutputStream(textFilePath)) {
             fileOutputstream.write(detailText.getBytes());
+            flag = true;
             Log.d("file","created");
         } catch (IOException e) {
             Log.e("error","IOException");

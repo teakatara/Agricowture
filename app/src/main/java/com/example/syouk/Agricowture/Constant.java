@@ -27,6 +27,7 @@ class Constant {
     static Marker[] marker;
     static String detailFilePath;
     static String cowNameFilePath;
+    static String videoPath;
     static String resultText;
     static String urlSt;
 }

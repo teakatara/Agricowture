@@ -40,7 +40,9 @@ import java.util.Objects;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback , OnMapLoadedCallback {
 
-    final String finalUrl = "https://cowcheck.herokuapp.com/get";
+//    final String finalUrl = "https://cowcheck.herokuapp.com/get";
+
+    final String finalUrl = "https://1b51f412.jp.ngrok.io/get";
 
     public static GoogleMap mMap;
     public static AlertDialog.Builder ad;
@@ -78,6 +80,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     Log.d("readLine", readLine[0] + ":" + readLine[1]);
                 }
             } catch (IOException e) {
+                Log.e("error","IOException");
                 e.printStackTrace();
             }
         }
@@ -195,30 +198,41 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
 
-        //横をスライドすると出てくるメニューのグラフボタンのイベント
+        Button cowInformationButton;
+        cowInformationButton = findViewById(R.id.CowInformationActivityButton);
+        cowInformationButton.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("LongLogTag")
+            @Override
+            public void onClick(View view) {
+                Log.d("CalendarActivityButton","pushed");
+                Intent intent = new Intent(getApplication(), CowInformationActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button videoButton;
+        videoButton = findViewById(R.id.VideoActivityButton);
+        videoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("VideoActivityButton","pushed");
+                Intent intent = new Intent(getApplication(), VideoListActivity.class);
+                startActivity(intent);
+            }
+        });
+
         Button calendarActivityButton;
         calendarActivityButton = findViewById(R.id.CalendarActivityButton);
         calendarActivityButton.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("LongLogTag")
             @Override
             public void onClick(View view) {
-                Log.d("CalendarActivityButton","push");
+                Log.d("CalendarActivityButton","pushed");
                 Intent intent = new Intent(getApplication(), CalendarActivity.class);
                 startActivity(intent);
             }
         });
 
-        Button cowInformationButton;
-        cowInformationButton = findViewById(R.id.CowInformationButton);
-        cowInformationButton.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("LongLogTag")
-            @Override
-            public void onClick(View view) {
-                Log.d("CalendarActivityButton","push");
-                Intent intent = new Intent(getApplication(), CowInformationActivity.class);
-                startActivity(intent);
-            }
-        });
     }
 
 
