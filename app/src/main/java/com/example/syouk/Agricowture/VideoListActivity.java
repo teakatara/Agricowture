@@ -10,9 +10,6 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -20,62 +17,37 @@ public class VideoListActivity extends AppCompatActivity {
 
     private ArrayList<String> listItems;
     private ArrayAdapter<String> arrayAdapter;
+    private ListView listView;
+    private File[] list;
 
     private String str = "akwfb";
     private String testPath;
-    private int counter = 0;
+    private int counter = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_list);
 
-        ListView listView = findViewById(R.id.videoList);
+        listView = findViewById(R.id.videoList);
         listItems = new ArrayList<>();
 
         Constant.videoPath = MyApplication.getAppContext().getFilesDir().getPath() + "/videos";
         Log.d("videoPath",Constant.videoPath);
-        File dir = new File(Constant.videoPath);
-        if(!dir.mkdir()){
-            Log.d("loadFile","start");
-            File[] list = dir.listFiles();
-            if(list != null) {
-                Log.d("list", Arrays.toString(list));
-                Log.d("listLength",String.valueOf(list.length));
-                for (int i = 0; i < list.length; i++) {
-                    Log.d("video", "for" + (i + 1));
-                    listItems.add(String.valueOf(list[i].getName()));
-                }
-                arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_expandable_list_item_1, listItems);
-                listView.setAdapter(arrayAdapter);
-                Log.d("adapterSet", "Done");
-            } else {
-                Log.d("fileList","null");
-            }
-        } else {
-            Log.d("mkdir","Done");
-        }
+        ReloadFanc();
+
 
         Button reloadButton = findViewById(R.id.reloadButton);
         reloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d("reloadButton","pushed");
-                counter++;
-                testPath = Constant.videoPath + "/test" + String.valueOf(counter) + ".txt";
-                try(FileOutputStream fileOutputStream = new FileOutputStream(testPath)){
-                    fileOutputStream.write(str.getBytes());
-                } catch (FileNotFoundException e) {
-                    Log.e("error","FileNotFoundException");
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    Log.e("error","IOException");
-                    e.printStackTrace();
-                }
-                listItems.add(testPath);
-                arrayAdapter.notifyDataSetChanged();
+
+
+                ReloadFanc();
             }
         });
+
 
         Button mapActivityButton = findViewById(R.id.MainActivityButton);
         mapActivityButton.setOnClickListener(new View.OnClickListener() {
@@ -106,5 +78,27 @@ public class VideoListActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    protected void ReloadFanc(){
+        File dir = new File(Constant.videoPath);
+        if(dir.mkdir()){
+            Log.d("mkdir","Done");
+            Log.d("loadFile","start");
+            list = dir.listFiles();
+            if(list != null) {
+                Log.d("list", Arrays.toString(list));
+                Log.d("listLength",String.valueOf(list.length));
+                for (int i = 0; i < list.length; i++) {
+                    Log.d("video", "for" + (i + 1));
+                    listItems.add(String.valueOf(list[i].getName()));
+                }
+                arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_expandable_list_item_1, listItems);
+                listView.setAdapter(arrayAdapter);
+                Log.d("adapterSet", "Done");
+            } else {
+                Log.d("fileList","null");
+            }
+        }
     }
 }
