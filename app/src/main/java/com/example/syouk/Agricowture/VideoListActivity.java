@@ -22,9 +22,7 @@ import java.util.Arrays;
 public class VideoListActivity extends AppCompatActivity {
 
     protected ListView listView;
-//    private String url = "https://github.com/teakatara/test/archive/master.zip";
     private String url;
-
     private String[] fileNames;
     Handler handler;
 
@@ -38,7 +36,7 @@ public class VideoListActivity extends AppCompatActivity {
         Constant.sdCardPath = String.valueOf(MyApplication.getAppContext().getExternalFilesDir(null));
         Log.d("videoPath",Constant.sdCardPath);
         url = Constant.fUrl + "/getmovie.zip";
-        url = "https://github.com/teakatara/test/archive/master.zip";
+//        url = "https://github.com/teakatara/test/archive/master.zip";
         handler = new Handler();
         ReloadFunc();
 
@@ -61,7 +59,7 @@ public class VideoListActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Log.d("reloadButton","pushed");
                 Constant.fileDecompressionFlag = false;
-                long id = DownloadFunc();
+                DownloadFunc();
                 MyThread myThread = new MyThread();
                 Thread thread = new Thread(myThread);
                 thread.start();
@@ -129,7 +127,7 @@ public class VideoListActivity extends AppCompatActivity {
         }
     }
 
-    protected long DownloadFunc(){
+    protected void DownloadFunc(){
         Log.d("downloadFunc","start");
         DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         Uri uri = Uri.parse(url);
@@ -137,14 +135,12 @@ public class VideoListActivity extends AppCompatActivity {
         Log.d("sdPath", Arrays.toString(this.getExternalFilesDirs(null)));
         DownloadManager.Request request = new DownloadManager.Request(uri);
         request.setDestinationInExternalFilesDir(getApplicationContext(), Environment.DIRECTORY_DOWNLOADS,"a.zip");
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
         request.setTitle("牛の動画");
-        request.setDescription("タップするとダウンロードを中止できます");
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
         assert downloadManager != null;
-        long id = downloadManager.enqueue(request);
+        long id =downloadManager.enqueue(request);
         Log.d("download","start");
-        return id;
     }
 
     protected void ReloadFunc(){

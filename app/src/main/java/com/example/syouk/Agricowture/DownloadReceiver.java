@@ -20,8 +20,6 @@ public class DownloadReceiver extends BroadcastReceiver {
             Thread thread = new Thread(zipDecompressionThread);
             thread.start();
             Log.d("zipDecompression","start");
-        } else if(DownloadManager.ACTION_NOTIFICATION_CLICKED.equals(action)){
-            Log.d("notification","clicked");
         }
     }
 }
