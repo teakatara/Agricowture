@@ -178,7 +178,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                         } else {
                                             Thread.sleep(1000);
                                             counter++;
-                                            if(counter > 100){
+                                            if(counter > 1000){
                                                 Log.d("counter","timeout");
                                                 break;
                                             }
