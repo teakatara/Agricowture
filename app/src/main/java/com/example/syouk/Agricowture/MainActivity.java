@@ -22,6 +22,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapLoadedCallback;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -40,10 +42,7 @@ import java.util.Objects;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback , OnMapLoadedCallback {
 
-//    final String finalUrl = "https://cowcheck.herokuapp.com/get";
-
-    final String finalUrl = "https://1b51f412.jp.ngrok.io/get";
-
+    private String url;
     public static GoogleMap mMap;
     public static AlertDialog.Builder ad;
 
@@ -60,7 +59,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
         Button reloadButton;
         reloadButton = findViewById(R.id.reloadButton);
-
+        url = Constant.fUrl + "/get";
         final Handler handler = new Handler();
 
         ad = new AlertDialog.Builder(this);
@@ -91,12 +90,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
                 //バグ防止
                 Constant.droneThreadOK = true;
-                counter = 0;
 
                 Log.d("mapLoadFinishedFlag",""+Constant.mapLoadFinishedFlag);
                 if (Constant.mapLoadFinishedFlag){
                     Log.d("reloadFlag",""+reloadFlag);
                     if(reloadFlag) {
+                        counter = 0;
                         if(!Constant.jsonFailureFlag) {
                             for (int i = 0; i < Constant.MVoA; i++) {
                                 Constant.marker[i].remove();
@@ -107,7 +106,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         Constant.jsonFlag = false;
                         JsonThread jsonThread = new JsonThread();
                         Thread thread = new Thread(jsonThread);
-                        Constant.urlSt = finalUrl;
+                        Constant.urlSt = url;
                         thread.start();
                         new Thread(new Runnable() {
                             @Override
@@ -158,12 +157,17 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                             handler.post(new Thread(new Runnable() {
                                                 @Override
                                                 public void run() {
+                                                    BitmapDescriptor abnormalBmp = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW);
                                                     for(int i = 0;i < Constant.MVoA;i++) {
                                                         Log.d("MarkerAdd", "for = " + i);
                                                         LatLng place = new LatLng(Constant.lat[i], Constant.lng[i]);
                                                         Log.d("LatLng", "for = " + i);
                                                         Log.d("LatLng",place.toString());
-                                                        Constant.marker[i] = mMap.addMarker(new MarkerOptions().position(place).title(Constant.cowName[i]));
+                                                        if(Constant.estrus[i]){
+                                                            Constant.marker[i] = mMap.addMarker(new MarkerOptions().position(place).title(Constant.cowName[i]).icon(abnormalBmp));
+                                                        } else {
+                                                            Constant.marker[i] = mMap.addMarker(new MarkerOptions().position(place).title(Constant.cowName[i]));
+                                                        }
                                                         Log.d("MarkerAdd",""+i);
                                                     }
                                                     Log.d("MarkerAdd","Done");
@@ -172,7 +176,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                             Constant.jsonFailureFlag = false;
                                             break;
                                         } else {
-                                            Thread.sleep(5000);
+                                            Thread.sleep(1000);
                                             counter++;
                                             if(counter > 100){
                                                 Log.d("counter","timeout");
@@ -276,8 +280,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 Log.d("CowNumber",""+Constant.cowNum);
 
                 if(Constant.droneThreadOK) {
-                    ad.setTitle("ここにドローンを向かわせますか？");
-                    ad.setMessage(Constant.cowName[Constant.cowNum - 1] + "にドローンを向かわせますか？");
+//                    ad.setTitle("ここにドローンを向かわせますか？");
+                    ad.setTitle(Constant.cowName[Constant.cowNum - 1] + "がいる位置にドローンを向かわせますか？");
+//                    ad.setMessage(Constant.cowName[Constant.cowNum - 1] + "がいる位置にドローンを向かわせますか？");
+
                     // OKボタン
                     ad.setPositiveButton("はい", new DialogInterface.OnClickListener() {
 
@@ -317,7 +323,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     alertDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
                     alertDialog.setCancelable(false);
                     alertDialog.show();
-
                 }
 
                 return false;
