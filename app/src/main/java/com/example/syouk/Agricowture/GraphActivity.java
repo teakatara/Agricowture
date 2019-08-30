@@ -28,12 +28,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class GraphActivity extends AppCompatActivity {
-    private String JSON = "[{\"amount\":\"39\",\"time\":\"8月23日\"},{\"amount\":\"21\",\"time\":\"8月24日\"},{\"amount\":\"19\",\"time\":\"8月25日\"},{\"amount\":\"32\",\"time\":\"8月26日\"},{\"amount\":\"55\",\"time\":\"8月27日\"},{\"amount\":\"82\",\"time\":\"8月28日\"}]";
+//    private String JSON = "[{\"moving\":\"1974\",\"time\":\"23日12時\"},{\"moving\":\"1531\",\"time\":\"23日18時\"},{\"moving\":\"621\",\"time\":\"24日0時\"},{\"moving\":\"153\",\"time\":\"24日6時\"},{\"moving\":\"2048\",\"time\":\"24日12時\"},{\"moving\":\"2733\",\"time\":\"24日18時\"}]";
     private ArrayList<String> xValues;
     private ArrayList<LineDataSet> dataSets;
-
-    //ここのURLを変える
-    final String finalUrl = "https://1b51f412.jp.ngrok.io/graphdata/";
 
     private LineChart lineChart;
     private TextView cowNameText;
@@ -50,7 +47,8 @@ public class GraphActivity extends AppCompatActivity {
         setContentView(R.layout.activity_graph);
         final Intent intent = getIntent();
         position = intent.getIntExtra("position",-1);
-
+        //ここのURLを変える
+        String url = Constant.fUrl + "/graphdata/";
         final Handler handler = new Handler();
 
         cowNameText = findViewById(R.id.cowIdText);
@@ -100,8 +98,8 @@ public class GraphActivity extends AppCompatActivity {
         counter = 0;
         JsonThread jsonThread = new JsonThread();
         Thread thread = new Thread(jsonThread);
-        Constant.urlSt = finalUrl + Constant.cowID[position];
-        Log.d("finalUrl",finalUrl);
+        Constant.urlSt = url + Constant.cowID[position];
+        Log.d("finalUrl", url);
         thread.start();
         //デバッグ用
 //        Constant.jsonFlag = true;

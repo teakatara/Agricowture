@@ -13,14 +13,6 @@ class List_item {
         mTitle = title;
     }
 
-//    public void setThumbnail(Bitmap thumbnail){
-//        mThumbnail = thumbnail;
-//    }
-//
-//    public void setmTitle(String title){
-//        mTitle = title;
-//    }
-
     Bitmap getThumbnail(){
         return mThumbnail;
     }

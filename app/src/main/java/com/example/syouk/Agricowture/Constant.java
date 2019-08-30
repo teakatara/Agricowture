@@ -16,6 +16,8 @@ class Constant {
     static boolean jsonFailureFlag = true;
     static boolean mapLoadFinishedFlag = false;
     static boolean droneThreadOK = true;
+    static boolean downloadFlag = false;
+    static boolean fileDecompressionFlag = false;
     static int MVoA = 0;
     static int cowNum;
     static String[] cowID;
@@ -27,7 +29,8 @@ class Constant {
     static Marker[] marker;
     static String detailFilePath;
     static String cowNameFilePath;
-    static String videoPath;
+    static String sdCardPath;
     static String resultText;
     static String urlSt;
+    final static String fUrl = "https://4cce9ab4.jp.ngrok.io";
 }
