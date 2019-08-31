@@ -32,5 +32,5 @@ class Constant {
     static String sdCardPath;
     static String resultText;
     static String urlSt;
-    final static String fUrl = "https://4cce9ab4.jp.ngrok.io";
+    final static String fUrl = "https://f9e7f37e.jp.ngrok.io";
 }
