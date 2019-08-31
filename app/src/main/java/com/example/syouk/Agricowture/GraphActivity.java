@@ -155,9 +155,9 @@ public class GraphActivity extends AppCompatActivity {
                             });
                             break;
                         } else {
-                            Thread.sleep(5000);
+                            Thread.sleep(1000);
                             counter++;
-                            if (counter > 100) {
+                            if (counter > 1000) {
                                 Log.d("counter", "timeout");
                                 break;
                             }
