@@ -16,10 +16,10 @@ public class JsonThread implements Runnable {
 
     @Override
     public void run() {
+
         HttpURLConnection con;
         URL url;
         StringBuilder result = new StringBuilder();
-
 
         try {
             url = new URL(Constant.urlSt);
@@ -52,10 +52,10 @@ public class JsonThread implements Runnable {
                 inReader.close();
                 in.close();
 
+                //取得したJSONデータをStringで保存
                 Constant.resultText = result.toString();
-
                 Log.d("json", Constant.resultText);
-
+                //JSONデータの取得が完了したことを知らせるフラグ
                 Constant.jsonFlag = true;
             }
         } catch (FileNotFoundException e) {

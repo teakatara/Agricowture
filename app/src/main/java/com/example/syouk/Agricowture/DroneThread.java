@@ -16,18 +16,20 @@ public class DroneThread implements Runnable {
 
     @Override
     public void run() {
-        Log.d("thread","in");
+        Log.d("droneThread","in");
+        //ドローンの飛行先をサーバに伝える
 
         HttpURLConnection con;
         URL url;
         String urlSt;
         StringBuilder result = new StringBuilder();
+        //ドローンを飛ばすときに出てくるダイアログのフラグ
         Constant.droneThreadOK = false;
 
         try{
             Log.d("droneOK", "true");
             Log.d("droneThread CowNum",""+Constant.cowNum);
-            urlSt = "https://cowcheck.herokuapp.com/flightdrone/"+String.valueOf(Constant.cowNum);//←constantクラスを通じてURLを変える　Constant.CowNum
+            urlSt = Constant.urlSt+ "/flightdrone/"+String.valueOf(Constant.cowNum);//←constantクラスを通じてURLを変える　Constant.CowNum
             Log.d("urlSt",urlSt);
             url = new URL(urlSt);
             con = (HttpURLConnection) url.openConnection();
@@ -38,12 +40,11 @@ public class DroneThread implements Runnable {
             con.setDoInput(true);
             Log.d("URLConnection", "Connecting");
             con.connect();
+
             int statusCode = con.getResponseCode();
             Log.d("statusCode", "" + statusCode);
             if (statusCode == HttpURLConnection.HTTP_OK) {
                 Log.d("DroneHTTPURLConnection", "Success");
-                //ここから続き書く。
-
                 final InputStream in = con.getInputStream();
                 Log.d("in", "" + in);
                 final InputStreamReader inReader = new InputStreamReader(in, StandardCharsets.UTF_8);

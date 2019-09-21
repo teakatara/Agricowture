@@ -16,8 +16,6 @@ import java.util.ArrayList;
 public class CowInformationActivity extends AppCompatActivity {
 
     private ListView listView;
-    private ArrayList<List_item> listItems;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,28 +23,12 @@ public class CowInformationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_cowinformation);
 
         listView = findViewById(R.id.listView);
-
-        listItems = new ArrayList<>();
-        for(int i = 0; i < Constant.MVoA; i++) {
-            Log.d("cowInformation", "for" + (i + 1));
-            Bitmap bmp;
-            if (Constant.estrus[i]) {
-                bmp = BitmapFactory.decodeResource(getResources(), R.drawable.abnormal);
-            } else {
-                bmp = BitmapFactory.decodeResource(getResources(), R.drawable.nomal);
-            }
-            List_item item = new List_item(bmp, Constant.cowName[i]);
-            listItems.add(item);
-        }
-        ListAdapter adapter = new ListAdapter(this, R.layout.list_item, listItems);
-        listView.setAdapter(adapter);
-        Log.d("adapterSet","Done");
-
-
+        reloadFunc();
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                //リストのアイテムがタップされた時の処理
                 Log.d( "position",String.valueOf(position));
                 Intent intent = new Intent(getApplication(),GraphActivity.class);
                 intent.putExtra("position",position);
@@ -55,6 +37,7 @@ public class CowInformationActivity extends AppCompatActivity {
             }
         });
 
+        //マップ(メイン)アクティビティに遷移
         Button mapActivityButton = findViewById(R.id.MainActivityButton);
         mapActivityButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,6 +48,7 @@ public class CowInformationActivity extends AppCompatActivity {
             }
         });
 
+        //動画アクティビティに遷移
         Button videoActivityButton = findViewById(R.id.VideoActivityButton);
         videoActivityButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,6 +59,7 @@ public class CowInformationActivity extends AppCompatActivity {
             }
         });
 
+        //カレンダーアクティビティに遷移
         Button calendarActivityButton = findViewById(R.id.CalendarActivityButton);
         calendarActivityButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,26 +70,31 @@ public class CowInformationActivity extends AppCompatActivity {
             }
         });
     }
+
     protected void onActivityResult(int requestCode, int resultCode, Intent intent){
         super.onActivityResult(requestCode, resultCode, intent);
 
         if(requestCode == 100 && resultCode == RESULT_OK && intent != null){
-            listItems = new ArrayList<>();
-            for (int i = 0; i < Constant.MVoA; i++){
-                Log.d("cowInformation", "for" + (i + 1));
-                Bitmap bmp;
-                if (Constant.estrus[i]) {
-                    bmp = BitmapFactory.decodeResource(getResources(), R.drawable.abnormal);
-                } else {
-                    bmp = BitmapFactory.decodeResource(getResources(), R.drawable.nomal);
-                }
-                List_item item = new List_item(bmp, Constant.cowName[i]);
-                listItems.add(item);
-            }
-            ListAdapter adapter = new ListAdapter(this, R.layout.list_item, listItems);
-            Log.d("adapterSet", "start");
-            listView.setAdapter(adapter);
-            Log.d("adapterSet","end");
+            reloadFunc();
         }
+    }
+
+    private void reloadFunc(){
+        //牛の情報をリストアップして描画
+        ArrayList<List_item> listItems = new ArrayList<>();
+        for (int i = 0; i < Constant.MVoA; i++){
+            Log.d("cowInformation", "for" + (i + 1));
+            Bitmap bmp;
+            if(Constant.estrus[i] == 2){
+                bmp = BitmapFactory.decodeResource(getResources(), R.drawable.abnormal);
+            } else {
+                bmp = BitmapFactory.decodeResource(getResources(), R.drawable.normal);
+            }
+            List_item item = new List_item(bmp, Constant.cowName[i]);
+            listItems.add(item);
+        }
+        ListAdapter adapter = new ListAdapter(this, R.layout.list_item, listItems);
+        listView.setAdapter(adapter);
+        Log.d("adapterSet","end");
     }
 }

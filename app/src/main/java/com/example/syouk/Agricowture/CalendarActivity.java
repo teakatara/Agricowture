@@ -33,7 +33,7 @@ public class CalendarActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
 
-        //ここから初期設定(化)
+        //ここからセットアップ
         Constant.detailFilePath = MyApplication.getAppContext().getFilesDir().getPath() + "/detailText";
         Log.d("file path",Constant.detailFilePath);
         detailFilename = new HashMap<>();
@@ -75,8 +75,7 @@ public class CalendarActivity extends AppCompatActivity {
         }
 
         dateClickFlag = false;
-        //ここまで
-
+        //セットアップ終了
 
         dateText = findViewById(R.id.dateText);
         detailText = findViewById(R.id.detailText);
@@ -84,11 +83,12 @@ public class CalendarActivity extends AppCompatActivity {
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int i, int i1, int i2) {
-
+                //カレンダーの日付をタップしたときの処理
                 dateClickFlag = true;
                 date = i + "年" + (i1 + 1) + "月" + i2 + "日";
                 dateText.setText(date);
                 Log.d("clickDate",date);
+                //詳細テキストのハッシュマップからgetして存在している場合、詳細欄に描画
                 if((detail = detailFilename.get(date + ".txt")) != null){
                     detailText.setText(detail);
                 } else {
@@ -98,7 +98,7 @@ public class CalendarActivity extends AppCompatActivity {
             }
         });
 
-
+        //編集ボタンを押されたときの処理
         Button editButton = findViewById(R.id.editButton);
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,10 +110,10 @@ public class CalendarActivity extends AppCompatActivity {
                     intent.putExtra("detail",detailFilename.get(date + ".txt"));
                     Log.d("putDate",date);
                     int requestCode = 1000;
+                    //詳細アクティビティに遷移
                     startActivityForResult(intent,requestCode);
-
-
                 } else {
+                    //一回も日付にタップしてない場合
                     Log.d("dateClickFlag","false");
                     Toast toast = Toast.makeText(CalendarActivity.this,"一回は曜日にタップしてください", Toast.LENGTH_SHORT);
                     toast.show();
@@ -121,6 +121,7 @@ public class CalendarActivity extends AppCompatActivity {
             }
         });
 
+        //マップ(メイン)アクティビティに遷移
         Button mapActivityButton = findViewById(R.id.MainActivityButton);
         mapActivityButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,6 +132,7 @@ public class CalendarActivity extends AppCompatActivity {
             }
         });
 
+        //牛の情報アクティビティに遷移
         Button cowInformationActivityButton = findViewById(R.id.CowInformationActivityButton);
         cowInformationActivityButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,6 +143,7 @@ public class CalendarActivity extends AppCompatActivity {
             }
         });
 
+        //動画アクティビティに遷移
         Button videoActivityButton = findViewById(R.id.VideoActivityButton);
         videoActivityButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -155,10 +158,16 @@ public class CalendarActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent intent){
         super.onActivityResult(requestCode, resultCode, intent);
 
-        boolean flag = intent.getBooleanExtra("flag",false);
+        boolean flag = intent.getBooleanExtra("changeFlag",false);
         if(requestCode == 1000 && resultCode == RESULT_OK && flag){
-            String detailText = intent.getStringExtra("detail");
-            detailFilename.put(date + ".txt", detailText);
+            //詳細テキストが変更された時に以下の処理が行われる
+            String detailString = intent.getStringExtra("detail");
+            //ハッシュマップに詳細テキストをput
+            detailFilename.put(date + ".txt", detailString);
+            //詳細欄にテキストをセット
+            detailText.setText(detailString);
+            Log.d("detailFile",date + ".txt");
+            Log.d("detailText",detailString);
         }
     }
 }

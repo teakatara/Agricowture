@@ -33,13 +33,17 @@ public class VideoListActivity extends AppCompatActivity {
 
         listView = findViewById(R.id.videoList);
 
+        //SDカードのパスの取得
         Constant.sdCardPath = String.valueOf(MyApplication.getAppContext().getExternalFilesDir(null));
         Log.d("videoPath",Constant.sdCardPath);
+
         url = Constant.fUrl + "/getmovie.zip";
-//        url = "https://github.com/teakatara/test/archive/master.zip";
+
         handler = new Handler();
+
         ReloadFunc();
 
+        //リストのアイテムがクリックされた時の処理
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -49,10 +53,12 @@ public class VideoListActivity extends AppCompatActivity {
                 intent.putExtra("videoFilePath",videoFilePath);
                 Log.d("videoFilePath",videoFilePath);
                 Log.d("VideoActivity","start");
+                //ビデオアクティビティに遷移
                 startActivity(intent);
             }
         });
 
+        //更新ボタンを押されたときの処理
         Button reloadButton = findViewById(R.id.reloadButton);
         reloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,13 +66,15 @@ public class VideoListActivity extends AppCompatActivity {
                 Log.d("reloadButton","pushed");
                 Constant.fileDecompressionFlag = false;
                 DownloadFunc();
+
+                //下に書いてあるMyThreadをスタート
                 MyThread myThread = new MyThread();
                 Thread thread = new Thread(myThread);
                 thread.start();
             }
         });
 
-
+        //メインアクティビティに遷移
         Button mapActivityButton = findViewById(R.id.MainActivityButton);
         mapActivityButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,6 +85,7 @@ public class VideoListActivity extends AppCompatActivity {
             }
         });
 
+        //牛の情報アクティビティに遷移
         Button cowInformationActivityButton = findViewById(R.id.CowInformationActivityButton);
         cowInformationActivityButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,6 +96,7 @@ public class VideoListActivity extends AppCompatActivity {
             }
         });
 
+        //カレンダーアクティビティに遷移
         Button calendarActivityButton = findViewById(R.id.CalendarActivityButton);
         calendarActivityButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,6 +108,7 @@ public class VideoListActivity extends AppCompatActivity {
         });
     }
 
+    //ファイルの解凍が終わった後に更新するためのスレッド
     class MyThread extends Thread{
         public void run(){
             int counter = 0;
@@ -112,12 +123,14 @@ public class VideoListActivity extends AppCompatActivity {
                     break;
                 } else {
                     try {
+                        Thread.sleep(1000);
                         counter++;
                         Log.d("counter",String.valueOf(counter));
                         if (counter > 1000) {
+                            //タイムアウト
+                            Log.d("ReloadThread","time out");
                             break;
                         }
-                        Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         Log.e("error", "InterruptedException");
                         e.printStackTrace();
@@ -127,6 +140,7 @@ public class VideoListActivity extends AppCompatActivity {
         }
     }
 
+    //サーバから動画をダウンロードする関数
     protected void DownloadFunc(){
         Log.d("downloadFunc","start");
         DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
@@ -139,10 +153,11 @@ public class VideoListActivity extends AppCompatActivity {
         request.setTitle("牛の動画");
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
         assert downloadManager != null;
-        long id =downloadManager.enqueue(request);
+        downloadManager.enqueue(request);
         Log.d("download","start");
     }
 
+    //端末に保存されている動画をリストアップして描画する関数
     protected void ReloadFunc(){
         File dir = new File(Constant.sdCardPath + "/videos");
         Log.d("loadFile","start");
@@ -154,11 +169,13 @@ public class VideoListActivity extends AppCompatActivity {
                 int length = list.length;
                 Log.d("listLength", String.valueOf(length));
                 fileNames = new String[length];
+                //動画ファイルのタイトルをリストアップ
                 for (int i = 0; i < length; i++) {
                     Log.d("video", "for" + (i + 1));
                     fileNames[i] = String.valueOf(list[i].getName());
                     listItems.add(fileNames[i]);
                 }
+                //リストアップした動画ファイルのタイトルを描画
                 ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(MyApplication.getAppContext(), android.R.layout.simple_expandable_list_item_1, listItems);
                 listView.setAdapter(arrayAdapter);
                 Log.d("adapterSet", "Done");

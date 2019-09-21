@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 public class DownloadReceiver extends BroadcastReceiver {
+
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
@@ -15,7 +16,7 @@ public class DownloadReceiver extends BroadcastReceiver {
             Log.d("download","complete");
             Toast toast = Toast.makeText(MyApplication.getAppContext(),"downloadComplete",Toast.LENGTH_SHORT);
             toast.show();
-            Constant.downloadFlag = true;
+            //ダウンロードが終わったのでファイルの解凍を開始
             ZipDecompressionThread zipDecompressionThread = new ZipDecompressionThread();
             Thread thread = new Thread(zipDecompressionThread);
             thread.start();

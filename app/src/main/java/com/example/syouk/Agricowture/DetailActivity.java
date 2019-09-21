@@ -18,8 +18,7 @@ public class DetailActivity extends AppCompatActivity {
     private EditText editText;
     private String detailText = "";
     private String textFilePath;
-
-    protected Boolean flag;
+    protected Boolean changeFlag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,33 +29,34 @@ public class DetailActivity extends AppCompatActivity {
         Log.d("date", date);
         String temText = intent.getStringExtra("detail");
 
-        flag = false;
+        //テキストが変更されたか検知するフラグ
+        changeFlag = false;
 
         editText = findViewById(R.id.editText);
+        //詳細テキストがnullじゃなければエディットテキストにセット
         if(temText != null){
             editText.setText(temText);
         }
 
+        //保存するテキストファイルのパス
         textFilePath = Constant.detailFilePath + "/" + date + ".txt";
 
+        //上の日付のセット
         TextView dateText = findViewById(R.id.dateText);
         dateText.setText(date);
 
-
+        //保存ボタンを押されたときの処理
         Button saveButton = findViewById(R.id.saveButton);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 detailText = editText.getText().toString();
-                if (detailText.length() != 0) {
-                    Log.d("detailText", detailText);
-                    SaveFileFunc();
-                } else {
-                    Log.d("detailText", "no input");
-                }
+                Log.d("detailText", detailText);
+                SaveFileFunc();
             }
         });
 
+        //戻るボタンを押されたときの処理
         Button backButton = findViewById(R.id.backButton);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,7 +64,7 @@ public class DetailActivity extends AppCompatActivity {
                 Log.d("backButton","pushed");
                 Intent intent1 = new Intent();
                 intent1.putExtra("detail",detailText);
-                intent1.putExtra("flag",flag);
+                intent1.putExtra("changeFlag",changeFlag);
                 setResult(RESULT_OK,intent1);
                 finish();
             }
@@ -75,20 +75,22 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
+            //バックキーが押された時に前のアクティビティに戻る
             Log.d("BackKey","pushed");
             Intent intent1 = new Intent();
             intent1.putExtra("detail", detailText);
-            intent1.putExtra("flag",flag);
+            intent1.putExtra("changeFlag",changeFlag);
             setResult(RESULT_OK, intent1);
             finish();
         }
         return true;
     }
 
+    //ファイルの保存をする関数
     private void SaveFileFunc() {
         try (FileOutputStream fileOutputstream =new FileOutputStream(textFilePath)) {
             fileOutputstream.write(detailText.getBytes());
-            flag = true;
+            changeFlag = true;
             Log.d("file","created");
         } catch (IOException e) {
             Log.e("error","IOException");

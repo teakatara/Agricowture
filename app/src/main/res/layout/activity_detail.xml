@@ -20,6 +20,7 @@
             android:gravity="center"
             android:textColor="@android:color/white"
             android:background="@color/green"/>
+
         <TextView
             android:id="@+id/dateText"
             android:layout_width="match_parent"
@@ -36,7 +37,6 @@
             android:autofillHints="username"
             android:inputType="textMultiLine"
             android:backgroundTint="@color/green"/>
-
     </LinearLayout>
 
     <LinearLayout
@@ -64,9 +64,5 @@
                 android:layout_gravity="center"
                 android:baselineAligned="false"
                 tools:ignore="ButtonStyle" />
-
     </LinearLayout>
-
-
-
 </LinearLayout>

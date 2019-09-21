@@ -17,6 +17,7 @@ public class VideoActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String videoFilePath = intent.getStringExtra("videoFilePath");
 
+        //選択されたビデオの描画・再生
         VideoView videoView = findViewById(R.id.videoView);
         videoView.setVideoPath(videoFilePath);
         videoView.start();
