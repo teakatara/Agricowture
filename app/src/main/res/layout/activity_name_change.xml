@@ -47,11 +47,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:textSize="50sp" />
-
-
             </LinearLayout>
-
-
         </LinearLayout>
 
         <LinearLayout
@@ -60,7 +56,6 @@
             android:layout_gravity="center"
             android:orientation="vertical"
             android:layout_weight="1">
-
 
             <TextView
                 android:layout_width="wrap_content"
@@ -84,10 +79,7 @@
                 android:inputType="text"
                 android:autofillHints="@string/hint2"
                 tools:ignore="LabelFor" />
-
         </LinearLayout>
-
-
     </LinearLayout>
 
     <LinearLayout
@@ -112,8 +104,5 @@
             android:textSize="20sp"
             android:layout_weight="1"
             tools:ignore="ButtonStyle" />
-
-
     </LinearLayout>
-
 </LinearLayout>

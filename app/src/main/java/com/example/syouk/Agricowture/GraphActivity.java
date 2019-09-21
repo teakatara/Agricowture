@@ -28,10 +28,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class GraphActivity extends AppCompatActivity {
-//    private String JSON = "[{\"moving\":\"1974\",\"time\":\"23日12時\"},{\"moving\":\"1531\",\"time\":\"23日18時\"},{\"moving\":\"621\",\"time\":\"24日0時\"},{\"moving\":\"153\",\"time\":\"24日6時\"},{\"moving\":\"2048\",\"time\":\"24日12時\"},{\"moving\":\"2733\",\"time\":\"24日18時\"}]";
+
     private ArrayList<String> xValues;
     private ArrayList<LineDataSet> dataSets;
-
     private LineChart lineChart;
     private TextView cowNameText;
     private int[] amount;
@@ -40,27 +39,27 @@ public class GraphActivity extends AppCompatActivity {
     private int position;
     private int counter;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph);
         final Intent intent = getIntent();
         position = intent.getIntExtra("position",-1);
-        //ここのURLを変える
         String url = Constant.fUrl + "/graphdata/";
         final Handler handler = new Handler();
 
+        //左上の牛の名前をセット
         cowNameText = findViewById(R.id.cowIdText);
         cowNameText.setText(Constant.cowName[position]);
-
+        //右上の発情期画像をセット
         ImageView estrusImage = findViewById(R.id.estrusInformation);
-        if (Constant.estrus[position]){
+        if (Constant.estrus[position] == 2){
             estrusImage.setImageResource(R.drawable.abnormal);
         } else {
-            estrusImage.setImageResource(R.drawable.nomal);
+            estrusImage.setImageResource(R.drawable.normal);
         }
 
+        //折れ線グラフのオフセットやスクロール無効化などの設定
         lineChart = findViewById(R.id.chart);
         lineChart.setDragEnabled(false);
         lineChart.setScaleEnabled(false);
@@ -71,12 +70,10 @@ public class GraphActivity extends AppCompatActivity {
         lineChart.setExtraLeftOffset(lineChart.getExtraLeftOffset() + 10);
         lineChart.setExtraRightOffset(lineChart.getExtraRightOffset() + 20);
 
-
-
+        //Y軸設定
         YAxis yAxis = lineChart.getAxisLeft();
         yAxis.setTextSize(15f);
         yAxis.setStartAtZero(true);
-
         lineChart.setRendererLeftYAxis(new YAxisRenderer(lineChart.getViewPortHandler(),
                 yAxis, lineChart.getTransformer(yAxis.getAxisDependency())){
             @Override
@@ -85,15 +82,15 @@ public class GraphActivity extends AppCompatActivity {
                 final int to = mYAxis.isDrawTopYLabelEntryEnabled()
                         ? mYAxis.mEntryCount
                         : (mYAxis.mEntryCount - 1);
-
-                // draw
+                //Y軸に単位をつけて描画
                 for (int i = 0; i < to; i++) {
                     String text = mYAxis.getFormattedLabel(i) + "m";
-
                     c.drawText(text, fixedPosition, positions[i * 2 + 1] + offset, mAxisLabelPaint);
                 }
             }
         });
+
+        //サーバからグラフデータの取得
         Constant.jsonFlag = false;
         counter = 0;
         JsonThread jsonThread = new JsonThread();
@@ -101,40 +98,39 @@ public class GraphActivity extends AppCompatActivity {
         Constant.urlSt = url + Constant.cowID[position];
         Log.d("finalUrl", url);
         thread.start();
-        //デバッグ用
-//        Constant.jsonFlag = true;
 
         new Thread(new Runnable() {
             @Override
             public void run() {
+                //取得したデータを元にグラフを描画
                 try {
                     while (true) {
                         Log.d("jsonFlag", String.valueOf(Constant.jsonFlag));
-
                         if (Constant.jsonFlag) {
-                            //テスト用
-//                                JSONArray jsonArray = new JSONArray(JSON);
-                            //本番用
                             JSONArray jsonArray = new JSONArray(Constant.resultText);
                             days = jsonArray.length();
                             amount = new int[days];
                             date = new String[days];
-                            for (int i = 0; i < days; i++) {
-                                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            int count = 0;
+                            //取得したデータを逆順に保存
+                            for (int i = days-1; i >= 0; i--) {
+                                JSONObject jsonObject = jsonArray.getJSONObject(count);
                                 amount[i] = Integer.parseInt(jsonObject.getString("moving"));
                                 date[i] = jsonObject.getString("time");
                                 Log.d("amount", String.valueOf(amount[i]));
                                 Log.d("date", date[i]);
+                                count++;
                             }
 
                             dataSets = new ArrayList<>();
                             xValues = new ArrayList<>(Arrays.asList(date));
-
+                            //データをグラフに反映
                             ArrayList<Entry> value = new ArrayList<>();
                             for (int i = 0; i < days; i++) {
                                 value.add(new Entry(amount[i], i));
                             }
 
+                            //グラフの色の設定
                             LineDataSet valueDataSet = new LineDataSet(value, Constant.cowID[position]);
                             valueDataSet.setCircleColor(Color.rgb(60, 179, 113));
                             valueDataSet.setColor(Color.rgb(60, 179, 113));
@@ -147,6 +143,7 @@ public class GraphActivity extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     Log.d("lineChartData", "set");
+                                    //グラフを描画
                                     lineChart.setData(new LineData(xValues, dataSets));
                                     lineChart.notifyDataSetChanged();
                                     lineChart.invalidate();
@@ -159,6 +156,7 @@ public class GraphActivity extends AppCompatActivity {
                             counter++;
                             if (counter > 1000) {
                                 Log.d("counter", "timeout");
+                                //タイムアウト
                                 break;
                             }
                         }
@@ -173,6 +171,7 @@ public class GraphActivity extends AppCompatActivity {
             }
         }).start();
 
+        //名前変更アクティビティに遷移
         Button nameChangeButton = findViewById(R.id.nameButton);
         nameChangeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -183,11 +182,24 @@ public class GraphActivity extends AppCompatActivity {
                 startActivityForResult(intent1,requestCode);
             }
         });
+
+        //戻るボタンを押されたときの処理
+        Button backButton = findViewById(R.id.backButton);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("BackButton","pushed");
+                Intent intent1 = new Intent();
+                setResult(RESULT_OK,intent1);
+                finish();
+            }
+        });
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
+            //バックキーが押された時に前のアクティビティに戻る
             Log.d("BackKey","pushed");
             Intent intent1 = new Intent();
             setResult(RESULT_OK, intent1);
@@ -200,6 +212,7 @@ public class GraphActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, intent);
 
         if(requestCode == 1000 && resultCode == RESULT_OK && intent != null){
+            //名前が変更された時に左上の名前に反映
             cowNameText.setText(Constant.cowName[position]);
         }
     }

@@ -11,8 +11,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-
-
         <fragment
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
@@ -28,11 +26,9 @@
             android:layout_gravity="end"
             android:layout_marginEnd="50dp"
             android:layout_marginTop="5dp"/>
-
     </FrameLayout>
 
     <!-- The navigation drawer -->
-
     <LinearLayout
         android:layout_width="240dp"
         android:layout_height="match_parent"
@@ -51,26 +47,54 @@
         <Button
             android:id="@+id/MainActivityButton"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="@string/map" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:paddingStart="10dp"
+            android:background="@drawable/frame_style"
+            android:drawableStart="@drawable/ic_map"
+            android:text="@string/map"
+            android:textColor="#ffffff"
+            android:textSize="25sp"
+            tools:ignore="RtlSymmetry" />
 
         <Button
             android:id="@+id/CowInformationActivityButton"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="@string/cow_information"/>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:paddingStart="10dp"
+            android:background="@drawable/frame_style"
+            android:drawableStart="@drawable/ic_cow_info"
+            android:text="@string/cow_information"
+            android:textColor="#ffffff"
+            android:textSize="25sp"
+            tools:ignore="RtlSymmetry" />
 
         <Button
             android:id="@+id/VideoActivityButton"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="@string/video"/>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:paddingStart="10dp"
+            android:background="@drawable/frame_style"
+            android:drawableStart="@drawable/ic_video"
+            android:text="@string/video"
+            android:textColor="#ffffff"
+            android:textSize="25sp"
+            tools:ignore="RtlSymmetry" />
 
         <Button
             android:id="@+id/CalendarActivityButton"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="@string/calendar" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:paddingStart="10dp"
+            android:background="@drawable/frame_style"
+            android:drawableStart="@drawable/ic_calendar"
+            android:text="@string/calendar"
+            android:textColor="#ffffff"
+            android:textSize="25sp"
+            tools:ignore="RtlSymmetry" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -91,10 +115,6 @@
                     android:contentDescription="@string/logo"
                     android:src="@drawable/icon"/>
             </LinearLayout>
-
         </LinearLayout>
-
-
-
     </LinearLayout>
 </android.support.v4.widget.DrawerLayout>

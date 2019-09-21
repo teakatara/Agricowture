@@ -12,6 +12,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class ZipDecompressionThread implements Runnable {
+
     @Override
     public void run() {
         String fileName = Constant.sdCardPath + "/Download/a.zip";
@@ -46,6 +47,7 @@ public class ZipDecompressionThread implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
+            //解凍し終わったファイルを削除
             File deleteDir = new File(Constant.sdCardPath + "/Download");
             File[] deleteFiles = deleteDir.listFiles();
             for (File deleteFile : deleteFiles) {
@@ -55,6 +57,7 @@ public class ZipDecompressionThread implements Runnable {
                     Log.d("fileDelete", "failed");
                 }
             }
+            //ファイルの解凍が終わったことを知らせるフラグ
             Constant.fileDecompressionFlag = true;
         }
     }

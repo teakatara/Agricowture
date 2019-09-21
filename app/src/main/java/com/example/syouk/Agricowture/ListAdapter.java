@@ -12,6 +12,7 @@ import android.widget.TextView;
 import java.util.List;
 
 public class ListAdapter extends ArrayAdapter<List_item> {
+
     private int mResource;
     private List<List_item> mItems;
     private LayoutInflater mInflater;
